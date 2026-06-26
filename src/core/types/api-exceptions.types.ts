@@ -9,3 +9,9 @@ export type ApiErrorResponse = {
   message: string;
   extras?: Record<string, unknown>;
 };
+
+export type FormattedValidationError = {
+  field: string;
+  errors: string[];
+  children?: FormattedValidationError[];
+};

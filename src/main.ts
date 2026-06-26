@@ -5,6 +5,7 @@ import { ConfigService } from '@nestjs/config';
 import { createEnvConfig } from './core/config/env.config';
 import { Logger } from '@nestjs/common';
 import { GlobalExceptionsHandlerFilter } from './core/filter/global-exception-handler.filter';
+import { createDtoValidationPipe } from './core/pipes/dto-validation-options.pipe';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
@@ -14,6 +15,7 @@ async function bootstrap() {
   const env = createEnvConfig(configService);
 
   app.useGlobalFilters(new GlobalExceptionsHandlerFilter());
+  app.useGlobalPipes(createDtoValidationPipe());
 
   createSwaggerConfig(app);
 
