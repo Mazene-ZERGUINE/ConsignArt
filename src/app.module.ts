@@ -11,9 +11,16 @@ import { SellContractsModule } from './modules/sell-contracts/sell-contracts.mod
 import { CommissionRulesModule } from './modules/commission-rules/commission-rules.module';
 import { ExpositionsModule } from './modules/expositions/expositions.module';
 import { AnalyticsModule } from './modules/analytics/analytics.module';
+import { ConfigModule } from '@nestjs/config';
+import { getEnvFilePath } from './core/config/env.config';
 
 @Module({
   imports: [
+    ConfigModule.forRoot({
+      isGlobal: true,
+      envFilePath: getEnvFilePath(),
+    }),
+
     CoreModule,
     SharedModule,
     AuthModule,
