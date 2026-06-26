@@ -11,16 +11,26 @@ import { SellContractsModule } from './modules/sell-contracts/sell-contracts.mod
 import { CommissionRulesModule } from './modules/commission-rules/commission-rules.module';
 import { ExpositionsModule } from './modules/expositions/expositions.module';
 import { AnalyticsModule } from './modules/analytics/analytics.module';
-import { ConfigModule } from '@nestjs/config';
+import { ConfigModule, ConfigService } from '@nestjs/config';
 import { getEnvFilePath } from './core/config/env.config';
+import { TypeOrmModule } from '@nestjs/typeorm';
+import { createTypeOrmConfig } from './core/config/typeorm.config';
 
 @Module({
   imports: [
+    // ============= Infra ============
     ConfigModule.forRoot({
       isGlobal: true,
       envFilePath: getEnvFilePath(),
     }),
 
+    TypeOrmModule.forRootAsync({
+      imports: [ConfigModule],
+      inject: [ConfigService],
+      useFactory: createTypeOrmConfig,
+    }),
+
+    // ============= Modules ============
     CoreModule,
     SharedModule,
     AuthModule,

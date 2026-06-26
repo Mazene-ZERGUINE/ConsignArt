@@ -11,7 +11,7 @@ export type DbDriversTypes = 'postgres' | 'sqlite';
 // the node env variable is set on the npm run dev commande called on module level
 export function getEnvFilePath(): string {
   const env: EnvTypes = (process.env.NODE_ENV as EnvTypes) ?? 'development';
-  return env === 'development' ? '.env.local' : '.env.production';
+  return env === 'development' ? '.env.local' : '.env';
 }
 
 /**

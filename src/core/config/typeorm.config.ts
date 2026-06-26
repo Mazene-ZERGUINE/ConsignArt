@@ -1,0 +1,41 @@
+import { ConfigService } from '@nestjs/config';
+import { Logger } from '@nestjs/common';
+import { TypeOrmModuleOptions } from '@nestjs/typeorm';
+import { DatabaseEnvironment } from '../types/app-environment.type';
+import { createEnvConfig } from './env.config';
+import { UnsupportedDatabaseTypeException } from '../exceptions/unsupported-database-type.exception';
+
+export const createTypeOrmConfig = (configService: ConfigService): TypeOrmModuleOptions => {
+  const env = createEnvConfig(configService);
+  const databaseConfig: DatabaseEnvironment = env.database;
+
+  Logger.warn(`App is running using driver: ${databaseConfig.databaseDriver}`, 'TypeOrmConfig');
+
+  const common = {
+    synchronize: databaseConfig.synchronize,
+    logging: databaseConfig.debugMode,
+    entities: [],
+  };
+
+  if (databaseConfig.databaseDriver === 'sqlite') {
+    return {
+      ...common,
+      type: 'better-sqlite3',
+      database: databaseConfig.database,
+    };
+  }
+
+  if (databaseConfig.databaseDriver === 'postgres') {
+    return {
+      ...common,
+      type: 'postgres',
+      host: databaseConfig.host,
+      port: databaseConfig.port,
+      username: databaseConfig.username,
+      password: databaseConfig.password,
+      database: databaseConfig.database,
+    };
+  }
+
+  throw new UnsupportedDatabaseTypeException(databaseConfig.databaseDriver);
+};
