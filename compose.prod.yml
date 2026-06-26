@@ -1,0 +1,42 @@
+services:
+
+  postgres:
+    image: postgres:17-alpine
+    container_name: consign-art-prod-db
+    restart: unless-stopped
+    env_file:
+      - .env
+    environment:
+      POSTGRES_USER: ${DB_USERNAME}
+      POSTGRES_PASSWORD: ${DB_PASSWORD}
+      POSTGRES_DB: ${DB_DATABASE}
+    ports:
+      - '${DB_PORT}:5432'
+    volumes:
+      - data:/var/lib/postgresql/data
+    healthcheck:
+      test: [ 'CMD-SHELL', 'pg_isready -U ${DB_USERNAME} -d ${DB_DATABASE}' ]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 10s
+
+  backend:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: consign-art-prod-api
+    restart: unless-stopped
+    env_file:
+      - .env
+    environment:
+      DB_HOST: postgres
+      NODE_ENV: production
+    ports:
+      - '3000:3000'
+    depends_on:
+      postgres:
+        condition: service_healthy
+
+volumes:
+  data:

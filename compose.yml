@@ -1,0 +1,28 @@
+services:
+  api:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      target: builder
+    container_name: art-api-dev
+    env_file:
+      - .env.local
+    environment:
+      NODE_ENV: development
+      DB_DATABASE: /app/data/app.sqlite
+    ports:
+      - "${SERVER_PORT:-3000}:${SERVER_PORT:-3000}"
+    volumes:
+      - ./src:/app/src
+      - ./test:/app/test
+      - ./tsconfig.json:/app/tsconfig.json
+      - ./tsconfig.build.json:/app/tsconfig.build.json
+      - ./nest-cli.json:/app/nest-cli.json
+      - ./.env.development:/app/.env.development
+      - /app/node_modules
+      - sqlite-data:/app/data
+    command: npm run start:dev
+    restart: unless-stopped
+
+volumes:
+  sqlite-data:
