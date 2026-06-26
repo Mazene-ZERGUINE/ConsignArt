@@ -4,6 +4,7 @@ import { createSwaggerConfig } from './core/config/swagger.config';
 import { ConfigService } from '@nestjs/config';
 import { createEnvConfig } from './core/config/env.config';
 import { Logger } from '@nestjs/common';
+import { GlobalExceptionsHandlerFilter } from './core/filter/global-exception-handler.filter';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
@@ -11,6 +12,8 @@ async function bootstrap() {
 
   const configService = app.get(ConfigService);
   const env = createEnvConfig(configService);
+
+  app.useGlobalFilters(new GlobalExceptionsHandlerFilter());
 
   createSwaggerConfig(app);
 

@@ -449,6 +449,8 @@ dist
 # Ignore everything but code style settings and run configurations
 # that are supposed to be shared within teams.
 
+.env.development
+
 .idea/*
 app.sqlite
 
