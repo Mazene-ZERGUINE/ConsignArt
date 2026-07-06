@@ -8,10 +8,10 @@
 
 import { Column, Entity, OneToOne, PrimaryGeneratedColumn } from 'typeorm';
 import { type UserRole, UserRoles } from '../../shared/enums/user-roles.enum';
-import { GalleryEntity } from '../gallery/gallery.entity';
+import { GalleryEntity } from '../gallery/entities/gallery.entity';
 import { CollectorEntity } from '../collector/collector.entity';
-import { AdminEntity } from '../admin/admin.entity';
-import { ArtistEntity } from '../artists/artist.entity';
+import { AdminEntity } from '../admin/entities/admin.entity';
+import { ArtistEntity } from '../artists/entities/artist.entity';
 
 @Entity('users_entity')
 export class UserEntity {

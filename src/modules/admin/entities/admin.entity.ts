@@ -15,7 +15,6 @@ export class AdminEntity {
   id: string;
 
   @OneToMany(() => GalleryEntity, (entity) => entity.validatedByAdmin)
-  @JoinColumn({ name: 'user_id' })
   validatedGalleries: GalleryEntity[];
 
   @OneToOne(() => UserEntity, (entity) => entity.admin)

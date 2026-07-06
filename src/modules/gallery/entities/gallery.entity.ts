@@ -30,6 +30,7 @@ export class GalleryEntity {
   validatedAt: Date | null;
 
   @ManyToOne(() => AdminEntity, (entity) => entity.validatedGalleries, { nullable: true })
+  @JoinColumn({ name: 'user_id' })
   validatedByAdmin: AdminEntity;
 
   @OneToOne(() => UserEntity, (entity) => entity.gallery, { nullable: false })

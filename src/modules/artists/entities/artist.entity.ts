@@ -6,8 +6,8 @@
  */
 
 import { Entity, JoinColumn, ManyToOne, OneToOne, PrimaryGeneratedColumn } from 'typeorm';
-import { UserEntity } from '../users/user.entity';
-import { GalleryEntity } from '../gallery/gallery.entity';
+import { UserEntity } from '../../users/user.entity';
+import { GalleryEntity } from '../../gallery/entities/gallery.entity';
 
 @Entity('artist_entity')
 export class ArtistEntity {
