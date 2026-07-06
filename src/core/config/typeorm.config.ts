@@ -5,10 +5,11 @@ import { DatabaseEnvironment } from '../types/app-environment.type';
 import { createEnvConfig } from './env.config';
 import { UnsupportedDatabaseTypeException } from '../exceptions/unsupported-database-type.exception';
 import { UserEntity } from '../../modules/users/user.entity';
-import { AdminEntity } from '../../modules/admin/admin.entity';
+import { AdminEntity } from '../../modules/admin/entities/admin.entity';
 import { CollectorEntity } from '../../modules/collector/collector.entity';
-import { ArtistEntity } from '../../modules/artists/artist.entity';
-import { GalleryEntity } from '../../modules/gallery/gallery.entity';
+import { ArtistEntity } from '../../modules/artists/entities/artist.entity';
+import { GalleryEntity } from '../../modules/gallery/entities/gallery.entity';
+import { RefreshTokensEntity } from '../../modules/auth/entities/refresh-tokens.entity';
 
 export const createTypeOrmConfig = (configService: ConfigService): TypeOrmModuleOptions => {
   const env = createEnvConfig(configService);
@@ -19,7 +20,14 @@ export const createTypeOrmConfig = (configService: ConfigService): TypeOrmModule
   const common = {
     synchronize: databaseConfig.synchronize,
     logging: databaseConfig.debugMode,
-    entities: [UserEntity, AdminEntity, CollectorEntity, ArtistEntity, GalleryEntity],
+    entities: [
+      UserEntity,
+      AdminEntity,
+      CollectorEntity,
+      ArtistEntity,
+      GalleryEntity,
+      RefreshTokensEntity,
+    ],
   };
 
   if (databaseConfig.databaseDriver === 'sqlite') {
