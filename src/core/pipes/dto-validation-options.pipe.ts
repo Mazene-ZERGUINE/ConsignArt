@@ -35,7 +35,7 @@ export const createDtoValidationPipe = (): PipeTransform => {
         statusCode: 400,
         error: 'Bad Request',
         message: 'Validation failed',
-        details: formatErrors(errors),
+        extras: formatErrors(errors),
       }),
   });
 };
