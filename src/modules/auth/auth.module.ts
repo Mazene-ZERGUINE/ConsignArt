@@ -7,16 +7,29 @@ import { GalleryModule } from '../gallery/gallery.module';
 import { ArtistsModule } from '../artists/artists.module';
 import { AdminModule } from '../admin/admin.module';
 import { AuthController } from './auth.controller';
+import { LoginService } from './services/login.service';
+import { UserEntity } from '../users/entities/user.entity';
+import { JwtModule } from '@nestjs/jwt';
+import { ConfigModule, ConfigService } from '@nestjs/config';
+import { createJwtConfig } from './jwt/jwt.config';
 
 @Module({
   imports: [
+    // ============= Infra ============
+    TypeOrmModule.forFeature([RefreshTokensEntity, UserEntity]),
+    JwtModule.registerAsync({
+      imports: [ConfigModule],
+      inject: [ConfigService],
+      useFactory: createJwtConfig,
+    }),
+
+    // ============= Modules ============
     CollectorModule,
     GalleryModule,
     ArtistsModule,
     AdminModule,
-    TypeOrmModule.forFeature([RefreshTokensEntity]),
   ],
-  providers: [SignupService],
+  providers: [SignupService, LoginService],
   controllers: [AuthController],
 })
 export class AuthModule {}

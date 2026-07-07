@@ -12,4 +12,8 @@ export class CryptoUtilsService {
     const saltRounds = this.configService.get<number>('SALT_ROUNDS', this.DEFAULT_SALT_ROUNDS);
     return await bcrypt.hash(plainText, saltRounds);
   }
+
+  public async validatePassword(plainText: string, hashedPassword: string): Promise<boolean> {
+    return await bcrypt.compare(plainText, hashedPassword);
+  }
 }

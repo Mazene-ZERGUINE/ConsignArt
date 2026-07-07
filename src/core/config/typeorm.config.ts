@@ -4,7 +4,7 @@ import { TypeOrmModuleOptions } from '@nestjs/typeorm';
 import { DatabaseEnvironment } from '../types/app-environment.type';
 import { createEnvConfig } from './env.config';
 import { UnsupportedDatabaseTypeException } from '../exceptions/unsupported-database-type.exception';
-import { UserEntity } from '../../modules/users/user.entity';
+import { UserEntity } from '../../modules/users/entities/user.entity';
 import { AdminEntity } from '../../modules/admin/entities/admin.entity';
 import { CollectorEntity } from '../../modules/collector/collector.entity';
 import { ArtistEntity } from '../../modules/artists/entities/artist.entity';

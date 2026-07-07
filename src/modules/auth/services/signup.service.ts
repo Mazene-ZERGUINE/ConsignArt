@@ -3,7 +3,7 @@ import { InjectDataSource } from '@nestjs/typeorm';
 import { DataSource, EntityManager } from 'typeorm';
 import { CreateUserDto } from '../dto/request/create-user.dto';
 import { InvalidUserRoleException } from '../exceptions/invalid-user-role.exception';
-import { UserEntity } from '../../users/user.entity';
+import { UserEntity } from '../../users/entities/user.entity';
 import { CreateArtistService } from '../../artists/services/create-artist.service';
 import { CreateAdminService } from '../../admin/services/create-admin.service';
 import { CreateCollectorService } from '../../collector/services/create-collector.service';

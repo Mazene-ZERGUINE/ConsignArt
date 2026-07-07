@@ -13,7 +13,7 @@ import {
   ManyToOne,
   PrimaryGeneratedColumn,
 } from 'typeorm';
-import { UserEntity } from '../../users/user.entity';
+import { UserEntity } from '../../users/entities/user.entity';
 
 @Entity('refresh_tokens_entity')
 export class RefreshTokensEntity {
