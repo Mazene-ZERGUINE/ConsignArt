@@ -1,5 +1,8 @@
 import { Entity, JoinColumn, OneToOne, PrimaryGeneratedColumn } from 'typeorm';
-import { UserEntity } from '../users/user.entity';
+import { UserEntity } from '../users/entities/user.entity';
+import { CollectorUserResponseDto } from '../../shared/dto/base-user-response.dto';
+import { UserRoles } from '../../shared/enums/user-roles.enum';
+import { toBase } from '../../shared/utils/users-dto.mappers';
 
 @Entity('collector_entity')
 export class CollectorEntity {
@@ -9,4 +12,10 @@ export class CollectorEntity {
   @OneToOne(() => UserEntity, (entity) => entity.collector)
   @JoinColumn({ name: 'user_id' })
   user: UserEntity;
+
+  public toCollectorDto(userEntity: UserEntity): CollectorUserResponseDto {
+    return {
+      ...toBase(userEntity, this.id, UserRoles.COLLECTOR),
+    };
+  }
 }

@@ -14,9 +14,12 @@ import {
   OneToOne,
   PrimaryGeneratedColumn,
 } from 'typeorm';
-import { UserEntity } from '../../users/user.entity';
+import { UserEntity } from '../../users/entities/user.entity';
 import { ArtistEntity } from '../../artists/entities/artist.entity';
 import { AdminEntity } from '../../admin/entities/admin.entity';
+import { GalleryUserResponseDto } from '../../../shared/dto/base-user-response.dto';
+import { UserRoles } from '../../../shared/enums/user-roles.enum';
+import { toBase } from '../../../shared/utils/users-dto.mappers';
 
 @Entity('gallery_entity')
 export class GalleryEntity {
@@ -39,4 +42,14 @@ export class GalleryEntity {
 
   @OneToMany(() => ArtistEntity, (entity) => entity.gallery)
   artists: ArtistEntity[];
+
+  public toGalleryDto(userEntity: UserEntity): GalleryUserResponseDto {
+    return {
+      ...toBase(userEntity, this.id, UserRoles.GALLERY),
+      galleryVerified: this.isValidated,
+      validatedAt: this.validatedAt,
+      validatedByAdmin: this.validatedByAdmin.toAdminDto(this.validatedByAdmin.user),
+      associatedArtists: (this.artists ?? []).map((artist) => artist.toArtistDto(artist.user)),
+    };
+  }
 }

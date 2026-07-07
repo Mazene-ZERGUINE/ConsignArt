@@ -6,8 +6,11 @@
  */
 
 import { Entity, JoinColumn, ManyToOne, OneToOne, PrimaryGeneratedColumn } from 'typeorm';
-import { UserEntity } from '../../users/user.entity';
+import { UserEntity } from '../../users/entities/user.entity';
 import { GalleryEntity } from '../../gallery/entities/gallery.entity';
+import { ArtistUserResponseDto } from '../../../shared/dto/base-user-response.dto';
+import { UserRoles } from '../../../shared/enums/user-roles.enum';
+import { toBase } from '../../../shared/utils/users-dto.mappers';
 
 @Entity('artist_entity')
 export class ArtistEntity {
@@ -20,4 +23,10 @@ export class ArtistEntity {
 
   @ManyToOne(() => GalleryEntity, (entity) => entity.artists)
   gallery: GalleryEntity;
+
+  public toArtistDto(userEntity: UserEntity): ArtistUserResponseDto {
+    return {
+      ...toBase(userEntity, this.id, UserRoles.ARTISTE),
+    };
+  }
 }
