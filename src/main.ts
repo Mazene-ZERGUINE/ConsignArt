@@ -6,10 +6,12 @@ import { createEnvConfig } from './core/config/env.config';
 import { Logger } from '@nestjs/common';
 import { GlobalExceptionsHandlerFilter } from './core/filter/global-exception-handler.filter';
 import { createDtoValidationPipe } from './core/pipes/dto-validation-options.pipe';
+import cookieParser from 'cookie-parser';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
   app.setGlobalPrefix('api/v1/');
+  app.use(cookieParser());
 
   const configService = app.get(ConfigService);
   const env = createEnvConfig(configService);
