@@ -6,19 +6,12 @@ import { InvalideEnvConfigException } from '../exceptions/invalide-env-config.ex
 import { EnvValidation } from './env.validation';
 
 export type EnvTypes = 'development' | 'production';
-export type DbDriversTypes = 'postgres' | 'sqlite';
 
-// the node env variable is set on the npm run dev commande called on module level
 export function getEnvFilePath(): string {
   const env: EnvTypes = (process.env.NODE_ENV as EnvTypes) ?? 'development';
   return env === 'development' ? '.env.local' : '.env';
 }
 
-/**
- * Validate the env variables using a class-validator class.
- *
- * Throws InvalideEnvConfigException on failure, mismatch, or missing mandatory vars.
- */
 function validateEnv(env: Record<string, unknown>): EnvValidation {
   const validated = plainToInstance(EnvValidation, env, {
     enableImplicitConversion: true,
@@ -40,11 +33,6 @@ function validateEnv(env: Record<string, unknown>): EnvValidation {
   return validated;
 }
 
-/**
- * Factory function, reads raw env variables loaded from ConfigService, apply class-validator validation, and,
- *
- * then maps to  AppEnvironmentType.
- */
 export const createEnvConfig = (configService: ConfigService): AppEnvironmentType => {
   const rawEnvData = {
     NODE_ENV: configService.get<string>('NODE_ENV'),
@@ -59,6 +47,8 @@ export const createEnvConfig = (configService: ConfigService): AppEnvironmentTyp
     DB_DATABASE: configService.get<string>('DB_DATABASE'),
     DB_SYNCHRONIZE: configService.get<string>('DB_SYNCHRONIZE'),
     DB_DEBUG_MODE: configService.get<string>('DB_DEBUG_MODE'),
+    JWT_SECRET: configService.get<string>('JWT_SECRET'),
+    JWT_REFRESH_SECRET: configService.get<string>('JWT_REFRESH_SECRET'),
   };
 
   const validated = validateEnv(rawEnvData);
