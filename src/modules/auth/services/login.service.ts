@@ -2,30 +2,30 @@ import { Injectable } from '@nestjs/common';
 import { AuthTokenDto, JwtToken } from '../dto/response/auth-token.dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { UserEntity } from '../../users/entities/user.entity';
-import { FindOptionsRelations, Repository } from 'typeorm';
+import { Repository } from 'typeorm';
 import { LoginDto } from '../dto/request/login.dto';
 import { InvalidCredentialsException } from '../exceptions/invalid-credentials.exception';
 import { CryptoUtilsService } from '../../../shared/service/crypto-utils.service';
-import { UserRole, UserRoles } from '../../../shared/enums/user-roles.enum';
+import { UserRoles } from '../../../shared/enums/user-roles.enum';
 import { NonValidatedGalleryException } from '../exceptions/non-validated-gallery.exception';
 import { JwtService } from '@nestjs/jwt';
 import { ConfigService } from '@nestjs/config';
 import { RefreshTokensEntity } from '../entities/refresh-tokens.entity';
+import { GetUserService } from '../../users/services/get-user.service';
 
 @Injectable()
 export class LoginService {
   constructor(
-    @InjectRepository(UserEntity) private readonly userRepository: Repository<UserEntity>,
     @InjectRepository(RefreshTokensEntity)
     private readonly refreshTokenRepository: Repository<RefreshTokensEntity>,
-
+    private readonly getUser: GetUserService,
     private readonly cryptoService: CryptoUtilsService,
     private readonly jwtService: JwtService,
     private readonly configService: ConfigService,
   ) {}
 
   public async execute(loginDto: LoginDto): Promise<AuthTokenDto> {
-    const userEntity = await this.findUserByEmail(loginDto.email);
+    const userEntity = await this.getUser.execute({ email: loginDto.email });
     await this.validatePassword(loginDto.password, userEntity.hashedPassword);
 
     this.isActivatedAccount(userEntity);
@@ -66,21 +66,6 @@ export class LoginService {
     return { accessToken, refreshToken };
   }
 
-  private async findUserByEmail(email: string): Promise<UserEntity> {
-    const base = await this.userRepository.findOne({
-      where: { email },
-      select: { userId: true, userRole: true }, // no relations
-    });
-    if (!base) throw new InvalidCredentialsException();
-
-    const user = await this.userRepository.findOne({
-      where: { userId: base.userId },
-      relations: this.relationsForRole(base.userRole),
-    });
-    if (!user) throw new InvalidCredentialsException();
-    return user;
-  }
-
   private async validatePassword(password: string, hashedPassword: string): Promise<void> {
     const isValidPassword = await this.cryptoService.validatePassword(password, hashedPassword);
     if (!isValidPassword) throw new InvalidCredentialsException();
@@ -89,22 +74,5 @@ export class LoginService {
   private isActivatedAccount(userEntity: UserEntity): void {
     if (userEntity.userRole === UserRoles.GALLERY && !userEntity.gallery.isValidated)
       throw new NonValidatedGalleryException();
-  }
-
-  private relationsForRole(role: UserRole): FindOptionsRelations<UserEntity> {
-    switch (role) {
-      case UserRoles.ADMIN:
-        return { admin: true };
-      case UserRoles.ARTISTE:
-        return { artist: true };
-      case UserRoles.COLLECTOR:
-        return { collector: true };
-      case UserRoles.GALLERY:
-        return {
-          gallery: {
-            validatedByAdmin: { user: true },
-          },
-        };
-    }
   }
 }
