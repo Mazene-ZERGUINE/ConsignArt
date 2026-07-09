@@ -5,20 +5,31 @@
  * Route les requêtes vers les bons services, ne contien aucun logique métier
  */
 
-import { Body, Controller, HttpCode, HttpStatus, Post } from '@nestjs/common';
+import { Body, Controller, Get, HttpCode, HttpStatus, Post, Req, UseGuards } from '@nestjs/common';
 import { ApiOkResponse, ApiOperation, ApiTags, ApiUnauthorizedResponse } from '@nestjs/swagger';
 import { CreateUserDto } from './dto/request/create-user.dto';
 import { SignupService } from './services/signup.service';
 import { AuthTokenDto } from './dto/response/auth-token.dto';
 import { LoginDto } from './dto/request/login.dto';
 import { LoginService } from './services/login.service';
+import { UserResponseDto } from '../../shared/dto/base-user-response.dto';
+import { GetAuthenticatedUserService } from './services/get-authenticated-user.service';
+import { AuthUser } from '../../shared/decorators/authenticated-user.decorator';
+import { type AuthenticatedUser } from '../../core/types/authenticated-user.types';
+import { JwtAccessGuard } from '../../core/guards/jwt-access.guard';
+import { JwtRefreshGuard } from '../../core/guards/jwt-refresh.guard';
+import { type Request } from 'express';
+import { RefreshTokenService } from './services/refresh-token.service';
+import { JwtPayload } from '../../core/types/jwt-payload.types';
 
 @ApiTags('auth')
 @Controller('auth')
 export class AuthController {
   constructor(
-    private readonly signupService: SignupService,
-    private readonly loginService: LoginService,
+    private readonly signuUp: SignupService,
+    private readonly logIn: LoginService,
+    private readonly getAuthenticatedUser: GetAuthenticatedUserService,
+    private readonly refresh: RefreshTokenService,
   ) {}
 
   @Post('signup')
@@ -30,8 +41,8 @@ export class AuthController {
   @ApiOkResponse({
     description: 'Return 200 OK when the user is successfully created',
   })
-  async signup(@Body() dto: CreateUserDto): Promise<void> {
-    return await this.signupService.execute(dto);
+  public async signup(@Body() dto: CreateUserDto): Promise<void> {
+    return await this.signuUp.execute(dto);
   }
 
   @Post('login')
@@ -47,7 +58,32 @@ export class AuthController {
   @ApiUnauthorizedResponse({
     description: 'Return 401 Unauthorized when the user is not authorized',
   })
-  async login(@Body() dto: LoginDto): Promise<AuthTokenDto> {
-    return await this.loginService.execute(dto);
+  public async login(@Body() dto: LoginDto): Promise<AuthTokenDto> {
+    return await this.logIn.execute(dto);
+  }
+
+  @UseGuards(JwtAccessGuard)
+  @Get('me')
+  @HttpCode(HttpStatus.OK)
+  @ApiOperation({
+    description: 'Endpoint used for authenticated users profile information, protected route',
+  })
+  @ApiOkResponse({
+    description: 'Return 200 OK with the users profile when authenticated ',
+  })
+  public async me(@AuthUser() user: AuthenticatedUser): Promise<UserResponseDto> {
+    return this.getAuthenticatedUser.execute(user.userId);
+  }
+
+  @UseGuards(JwtRefreshGuard)
+  @Post('refresh-token')
+  @HttpCode(HttpStatus.OK)
+  @ApiOperation({
+    description:
+      'Endpoint used for JWT tokens refresh, verify the token, revoke and rotate refresh and generate a new access',
+  })
+  public async refreshToken(@Req() request: Request): Promise<AuthTokenDto> {
+    const user = request.user as JwtPayload & { refreshToken: string };
+    return await this.refresh.execute(user.refreshToken, user.sub);
   }
 }

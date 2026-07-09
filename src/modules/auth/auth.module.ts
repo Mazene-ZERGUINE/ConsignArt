@@ -12,6 +12,13 @@ import { UserEntity } from '../users/entities/user.entity';
 import { JwtModule } from '@nestjs/jwt';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { createJwtConfig } from './jwt/jwt.config';
+import { PassportModule } from '@nestjs/passport';
+import { AccessTokenStrategy } from './jwt/strategies/access-token.strategy';
+import { RefreshTokenStrategy } from './jwt/strategies/refresh-token.strategy';
+import { GetAuthenticatedUserService } from './services/get-authenticated-user.service';
+import { UsersModule } from '../users/users.module';
+import { RefreshTokenService } from './services/refresh-token.service';
+import { JwtSignService } from './services/jwt-signe.service';
 
 @Module({
   imports: [
@@ -22,14 +29,23 @@ import { createJwtConfig } from './jwt/jwt.config';
       inject: [ConfigService],
       useFactory: createJwtConfig,
     }),
-
+    PassportModule,
     // ============= Modules ============
     CollectorModule,
     GalleryModule,
     ArtistsModule,
     AdminModule,
+    UsersModule,
   ],
-  providers: [SignupService, LoginService],
+  providers: [
+    SignupService,
+    LoginService,
+    AccessTokenStrategy,
+    RefreshTokenStrategy,
+    GetAuthenticatedUserService,
+    RefreshTokenService,
+    JwtSignService,
+  ],
   controllers: [AuthController],
 })
 export class AuthModule {}
