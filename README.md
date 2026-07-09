@@ -23,9 +23,11 @@
 - [x] Inscription (Collecteur, Artist, Admin & Gallery)
 - [x] Un utilisateur `Artist` est attaché à qu'une seul `Galerie` à la fois 
 - [x] Les mots de passe sont hachés avec bcrypt
-- [ ] un compte `Galerie` doit être validé par un administrateur avant son activation
+- [x] un compte `Galerie` doit être validé par un administrateur avant son activation
 - [x] Login & Authentication avec JWT (Access + Refresh Token)
-- [ ] Access au resource d'un compte via `/auth/me`
+- [x] Access au resource d'un compte via `/auth/me`
+- [x] Refresh Token pour obtenir un nouveau Access Token`
+- [x] Refresh Token rotation & revocation
 
 
 
@@ -55,9 +57,9 @@
 
 ### Guards:
 
-- [ ] Guard d'authentification globale (JwtAuthGuard) pour les accessTokens
-- [ ] Guard d'authentification globale (JwtRefreshAuthGuard) pour les refreshTokens
-- [ ] Guard de rôle (Admin, Artist, Gallery, Collector)
+- [x] Guard d'authentification globale (JwtAuthGuard) pour les accessTokens
+- [x] Guard d'authentification globale (JwtRefreshAuthGuard) pour les refreshTokens
+- [x] Guard de rôle (Admin, Artist, Gallery, Collector)
 - [ ] Guard d'appartenance personnalisée OwnershipGuard (vérifie qu'une
   œuvre appartient bien à la galerie de l'utilisateur connecté)
 
