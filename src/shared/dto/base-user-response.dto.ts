@@ -24,7 +24,7 @@ export type ArtistUserResponseDto = BaseUserResponseDto<typeof UserRoles.ARTISTE
 export type GalleryUserResponseDto = BaseUserResponseDto<typeof UserRoles.GALLERY> & {
   galleryVerified: boolean;
   validatedAt: Date | null;
-  validatedByAdmin: AdminUserResponseDto;
+  validatedByAdmin: AdminUserResponseDto | null;
   associatedArtists: ArtistUserResponseDto[];
 };
 

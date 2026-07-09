@@ -23,7 +23,6 @@ export class GetUserService {
     });
     if (!base) throw new InvalidCredentialsException();
 
-    console.log(base.userRole + '=============================');
     const user = await this.userRepository.findOne({
       where: { userId: base.userId },
       relations: this.relationsForRole(base.userRole),
@@ -43,9 +42,7 @@ export class GetUserService {
         return { collector: true };
       case UserRoles.GALLERY:
         return {
-          gallery: {
-            validatedByAdmin: { user: true },
-          },
+          gallery: true,
         };
     }
   }

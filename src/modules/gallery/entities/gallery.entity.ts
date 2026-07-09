@@ -33,8 +33,8 @@ export class GalleryEntity {
   validatedAt: Date | null;
 
   @ManyToOne(() => AdminEntity, (entity) => entity.validatedGalleries, { nullable: true })
-  @JoinColumn({ name: 'user_id' })
-  validatedByAdmin: AdminEntity;
+  @JoinColumn({ name: 'validated_by_admin_id' })
+  validatedByAdmin: AdminEntity | null;
 
   @OneToOne(() => UserEntity, (entity) => entity.gallery, { nullable: false })
   @JoinColumn({ name: 'user_id' })
@@ -48,7 +48,9 @@ export class GalleryEntity {
       ...toBase(userEntity, this.id, UserRoles.GALLERY),
       galleryVerified: this.isValidated,
       validatedAt: this.validatedAt,
-      validatedByAdmin: this.validatedByAdmin.toAdminDto(this.validatedByAdmin.user),
+      validatedByAdmin: this.validatedByAdmin
+        ? this.validatedByAdmin.toAdminDto(this.validatedByAdmin.user)
+        : null,
       associatedArtists: (this.artists ?? []).map((artist) => artist.toArtistDto(artist.user)),
     };
   }
