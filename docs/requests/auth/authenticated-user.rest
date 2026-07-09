@@ -1,0 +1,3 @@
+### Valide refresh request with a valid refreshToken example
+GET http://localhost:3000/api/v1/auth/me
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJjYjgzNjdhMC0yNjQ4LTQwYTgtYjQ3Yy1kMWRmMTlkMTk0NTIiLCJyb2xlIjoiYXJ0aXN0ZSIsImVtYWlsIjoiYXJ0aXN0LWV4YW1wbGVAZW1haWwuZnIiLCJpYXQiOjE3ODM2MTIxNjAsImV4cCI6MTc4MzYxMzA2MH0.4srHtUiGhNZgzTAGjMeaIDAjNLy8VHwHxdEez6UPpuM

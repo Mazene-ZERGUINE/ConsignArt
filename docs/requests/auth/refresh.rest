@@ -1,0 +1,4 @@
+### Valide refresh request with a valid refreshToken example
+POST http://localhost:3000/api/v1/auth/refresh-token
+Cookie: refreshToken=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJjYjgzNjdhMC0yNjQ4LTQwYTgtYjQ3Yy1kMWRmMTlkMTk0NTIiLCJlbWFpbCI6ImFydGlzdC1leGFtcGxlQGVtYWlsLmZyIiwicm9sZSI6ImFydGlzdGUiLCJpYXQiOjE3ODM2MTIxMzcsImV4cCI6MTc4MzYxMzAzN30.3HIStZKvWZwIZED5fqBN3HfZQYsA29O1YGVgK6-N5mY
+

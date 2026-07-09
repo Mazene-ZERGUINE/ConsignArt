@@ -1,0 +1,9 @@
+### Valid Login Request with Valid user:
+POST http://localhost:3000/api/v1/auth/login
+Content-Type: application/json
+
+{
+  "email": "artist-example@email.fr",
+  "password": "Password@1234",
+  "userRole": "artiste"
+}
