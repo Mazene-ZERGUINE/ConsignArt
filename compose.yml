@@ -20,9 +20,6 @@ services:
       - ./nest-cli.json:/app/nest-cli.json
       - ./.env.development:/app/.env.development
       - /app/node_modules
-      - sqlite-data:/app/data
+      - ./data:/app/data
     command: npm run start:dev
     restart: unless-stopped
-
-volumes:
-  sqlite-data:

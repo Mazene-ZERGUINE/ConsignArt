@@ -15,6 +15,7 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
 import { getEnvFilePath } from './core/config/env.config';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { createTypeOrmConfig } from './core/config/typeorm.config';
+import { AdminModule } from './modules/admin/admin.module';
 
 @Module({
   imports: [
@@ -43,6 +44,7 @@ import { createTypeOrmConfig } from './core/config/typeorm.config';
     CommissionRulesModule,
     ExpositionsModule,
     AnalyticsModule,
+    AdminModule,
   ],
   controllers: [],
   providers: [],

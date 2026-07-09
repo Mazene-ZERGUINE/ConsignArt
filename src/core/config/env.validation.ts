@@ -48,4 +48,12 @@ export class EnvValidation {
 
   @IsBoolean()
   DB_DEBUG_MODE!: boolean;
+
+  @IsString()
+  @IsNotEmpty()
+  JWT_SECRET!: string;
+
+  @IsString()
+  @IsNotEmpty()
+  JWT_REFRESH_SECRET!: string;
 }
