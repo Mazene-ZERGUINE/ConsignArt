@@ -7,10 +7,10 @@
 
 import { Body, Controller, Get, HttpCode, HttpStatus, Post, Req, UseGuards } from '@nestjs/common';
 import { ApiOkResponse, ApiOperation, ApiTags, ApiUnauthorizedResponse } from '@nestjs/swagger';
-import { CreateUserDto } from './dto/request/create-user.dto';
+import { CreateUserDto } from '../../shared/dto/create-user.dto';
 import { SignupService } from './services/signup.service';
-import { AuthTokenDto } from './dto/response/auth-token.dto';
-import { LoginDto } from './dto/request/login.dto';
+import { AuthTokenDto } from './dto/auth-token.dto';
+import { LoginDto } from './dto/login.dto';
 import { LoginService } from './services/login.service';
 import { UserResponseDto } from '../../shared/dto/base-user-response.dto';
 import { GetAuthenticatedUserService } from './services/get-authenticated-user.service';

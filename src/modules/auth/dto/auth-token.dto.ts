@@ -1,5 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { type BaseUserResponseDto } from '../../../../shared/dto/base-user-response.dto';
+import { type BaseUserResponseDto } from '../../../shared/dto/base-user-response.dto';
 
 export type JwtToken = {
   accessToken: string;
