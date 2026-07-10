@@ -7,10 +7,16 @@ import { AdminController } from './admin.controller';
 import { UsersModule } from '../users/users.module';
 import { GalleryModule } from '../gallery/gallery.module';
 import { GalleryEntity } from '../gallery/entities/gallery.entity';
+import { GetTransferRequestsService } from './services/get-transfer-requests.service';
+import { TransferRequestEntity } from '../../shared/entities/transfer-request.entity';
 
 @Module({
-  imports: [UsersModule, GalleryModule, TypeOrmModule.forFeature([AdminEntity, GalleryEntity])],
-  providers: [CreateAdminService, ValidateGalleryAccountService],
+  imports: [
+    UsersModule,
+    GalleryModule,
+    TypeOrmModule.forFeature([AdminEntity, GalleryEntity, TransferRequestEntity]),
+  ],
+  providers: [CreateAdminService, ValidateGalleryAccountService, GetTransferRequestsService],
   exports: [CreateAdminService],
   controllers: [AdminController],
 })

@@ -5,6 +5,7 @@ import {
   type TransferRequestStatus,
   TransferRequestStatusEnum,
 } from '../enums/transfer-request.status.enum';
+import { TransferRequestsResponseDto } from '../dto/transfer-requests-response.dto';
 
 @Entity('transfer_request_entity')
 export class TransferRequestEntity {
@@ -27,7 +28,7 @@ export class TransferRequestEntity {
 
   @ManyToOne(() => GalleryEntity, { nullable: true })
   @JoinColumn({ name: 'from_gallery_id' })
-  fromGallery: GalleryEntity | null;
+  fromGallery: GalleryEntity;
 
   @ManyToOne(() => GalleryEntity, { nullable: false })
   @JoinColumn({ name: 'to_gallery_id' })
@@ -37,7 +38,14 @@ export class TransferRequestEntity {
   @JoinColumn({ name: 'initiated_by_artist_id' })
   initiatedByArtist: ArtistEntity | null;
 
-  @ManyToOne(() => GalleryEntity, { nullable: true })
-  @JoinColumn({ name: 'initiated_by_gallery_id' })
-  initiatedByGallery: GalleryEntity | null;
+  toResponseDto(): TransferRequestsResponseDto {
+    return {
+      id: this.id,
+      artistToTransfer: this.artistToTransfer.toArtistDto(),
+      toGallery: this.toGallery.toGalleryDto(),
+      fromGallery: this.fromGallery.toGalleryDto(),
+      transferReason: this.transferReason,
+      status: this.status,
+    };
+  }
 }
