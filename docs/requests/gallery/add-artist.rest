@@ -24,7 +24,7 @@ Content-Type: application/json
   "portfolioUrl": "https://johndoe.art",
   "nationality": "French",
   "createUserDto": {
-    "email": "john.doe@example.fr",
+    "email": "artist1@example.fr",
     "password": "Password@1234!",
     "userRole": "artiste"
   }

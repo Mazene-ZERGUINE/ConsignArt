@@ -1,13 +1,26 @@
-import { Controller, Get, HttpCode, HttpStatus, Query, UseGuards } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  HttpCode,
+  HttpStatus,
+  Param,
+  Patch,
+  Query,
+  UseGuards,
+} from '@nestjs/common';
 import { ApiOperation, ApiTags } from '@nestjs/swagger';
 import { ValidateGalleryAccountService } from './services/validate-gallery-account.service';
 import { AuthUser } from '../../shared/decorators/authenticated-user.decorator';
 import { type AuthenticatedUser } from '../../core/types/authenticated-user.types';
 import { JwtAccessGuard } from '../../core/guards/jwt-access.guard';
 import { AdminRoleGuard } from '../../core/guards/admin-role.guard';
-import { type TransferRequestStatus } from '../../shared/enums/transfer-request.status.enum';
+import {
+  TransferRequestActionType,
+  type TransferRequestStatus,
+} from '../../shared/enums/transfer-request.status.enum';
 import { TransferRequestsResponseDto } from '../../shared/dto/transfer-requests-response.dto';
 import { GetTransferRequestsService } from './services/get-transfer-requests.service';
+import { AcceptOrRefuseTransferRequest } from './services/accept-or-refuse-transfer-request.service';
 
 @ApiTags('Admin')
 @Controller('admin')
@@ -15,6 +28,7 @@ export class AdminController {
   constructor(
     private readonly validateGalleryAccount: ValidateGalleryAccountService,
     private readonly getTransferRequests: GetTransferRequestsService,
+    private readonly acceptOrRefuseTransferRequest: AcceptOrRefuseTransferRequest,
   ) {}
 
   @UseGuards(JwtAccessGuard, AdminRoleGuard)
@@ -40,5 +54,18 @@ export class AdminController {
     @Query('status') transferStatus?: TransferRequestStatus,
   ): Promise<TransferRequestsResponseDto[]> {
     return await this.getTransferRequests.execute(transferStatus);
+  }
+
+  @UseGuards(JwtAccessGuard, AdminRoleGuard)
+  @Patch('transfer-requests/:id/action')
+  @HttpCode(HttpStatus.NO_CONTENT)
+  @ApiOperation({
+    description: 'Endpoint used by admins to accept or reject a transfer request',
+  })
+  public async handleTransferRequest(
+    @Param('id') transferRequestId: string,
+    @Query('actionType') actionType: TransferRequestActionType,
+  ): Promise<void> {
+    await this.acceptOrRefuseTransferRequest.execute(transferRequestId, actionType);
   }
 }
