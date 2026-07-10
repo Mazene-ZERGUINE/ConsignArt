@@ -24,9 +24,9 @@ export class AdminEntity {
   @JoinColumn({ name: 'user_id' })
   user: UserEntity;
 
-  public toAdminDto(userEntity: UserEntity): AdminUserResponseDto {
+  public toAdminDto(): AdminUserResponseDto {
     return {
-      ...toBase(userEntity, this.id, UserRoles.ADMIN),
+      ...toBase(this.user, this.id, UserRoles.ADMIN),
     };
   }
 }

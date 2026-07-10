@@ -65,7 +65,7 @@ export class ArtistEntity {
   @OneToMany(() => TransferRequestEntity, (entity) => entity.artistToTransfer)
   transferRequests: TransferRequestEntity[];
 
-  public toArtistDto(userEntity: UserEntity): ArtistUserResponseDto {
+  public toArtistDto(): ArtistUserResponseDto {
     return {
       firstName: this.firstName,
       lastName: this.lastName,
@@ -75,13 +75,13 @@ export class ArtistEntity {
         ? {
             entityId: this.gallery.id,
             galleryVerified: this.gallery.isValidated,
-            userId: this.user.userId,
-            email: this.user.email,
+            userId: this.gallery.user.userId,
+            email: this.gallery.user.email,
           }
         : null,
       joinedGalleryAt: this.joinedGalleryAt,
       portfolioUrl: this.portfolioUrl,
-      ...toBase(userEntity, this.id, UserRoles.ARTISTE),
+      ...toBase(this.user, this.id, UserRoles.ARTISTE),
     };
   }
 }

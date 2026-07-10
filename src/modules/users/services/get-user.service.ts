@@ -40,17 +40,17 @@ export class GetUserService {
   private relationsForRole(role: UserRole): FindOptionsRelations<UserEntity> {
     switch (role) {
       case UserRoles.ADMIN:
-        return { admin: true };
+        return { admin: { user: true } };
       case UserRoles.ARTISTE:
-        return { artist: { gallery: true, user: true } };
+        return { artist: { user: true, gallery: { user: true } } };
       case UserRoles.COLLECTOR:
-        return { collector: true };
+        return { collector: { user: true } };
       case UserRoles.GALLERY:
         return {
           gallery: {
             user: true,
             validatedByAdmin: { user: true },
-            artists: { user: true },
+            artists: { user: true, gallery: { user: true } },
           },
         };
     }
