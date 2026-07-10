@@ -1,4 +1,17 @@
-### Admin Gallery validation protected route
-GET http://localhost:3000/api/v1/admin/validate-gallery-account?galleryId=56fb6dff-eb17-4170-b643-2a0d33638e35
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJjYjgzNjdhMC0yNjQ4LTQwYTgtYjQ3Yy1kMWRmMTlkMTk0NTIiLCJyb2xlIjoiYXJ0aXN0ZSIsImVtYWlsIjoiYXJ0aXN0LWV4YW1wbGVAZW1haWwuZnIiLCJpYXQiOjE3ODM2MTUxNzYsImV4cCI6MTc4MzYxNjA3Nn0.EM5RpTGDyxZ4u7g1HPsE1HlFEF-MStB6FfuB63gUTfs
+### Login as an admin
+POST http://localhost:3000/api/v1/auth/login
+Content-Type: application/json
 
+{
+  "email": "admin@example.com",
+  "password": "Password@1234",
+  "userRole": "admin"
+}
+
+> {%
+  client.global.set("auth_token", response.body.token.accessToken);
+%}
+
+### Admin Gallery validation protected route
+GET http://localhost:3000/api/v1/admin/validate-gallery-account?galleryId=cfb42b23-7e73-422f-bdb4-12be439559f9
+Authorization: Bearer {{auth_token}}
