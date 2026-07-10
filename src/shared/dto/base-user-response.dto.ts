@@ -18,7 +18,13 @@ export type AdminUserResponseDto = BaseUserResponseDto<typeof UserRoles.ADMIN> &
 };
 
 export type ArtistUserResponseDto = BaseUserResponseDto<typeof UserRoles.ARTISTE> & {
-  // todo: add other artist properties here
+  firstName: string | null;
+  lastName: string | null;
+  nationality: string | null;
+  biography: string | null;
+  portfolioUrl: string | null;
+  gallery: GalleryUserResponseDto | null;
+  joinedGalleryAt: Date | null;
 };
 
 export type GalleryUserResponseDto = BaseUserResponseDto<typeof UserRoles.GALLERY> & {

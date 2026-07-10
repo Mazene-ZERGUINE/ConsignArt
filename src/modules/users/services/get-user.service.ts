@@ -42,7 +42,11 @@ export class GetUserService {
         return { collector: true };
       case UserRoles.GALLERY:
         return {
-          gallery: true,
+          gallery: {
+            user: true,
+            validatedByAdmin: { user: true },
+            artists: { user: true },
+          },
         };
     }
   }
