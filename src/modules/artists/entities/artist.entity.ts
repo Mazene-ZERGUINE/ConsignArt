@@ -71,7 +71,14 @@ export class ArtistEntity {
       lastName: this.lastName,
       biography: this.bio,
       nationality: this.nationality,
-      gallery: this.gallery ? this.gallery.toGalleryDto(this.gallery.user) : null,
+      gallery: this.gallery
+        ? {
+            entityId: this.gallery.id,
+            galleryVerified: this.gallery.isValidated,
+            userId: this.user.userId,
+            email: this.user.email,
+          }
+        : null,
       joinedGalleryAt: this.joinedGalleryAt,
       portfolioUrl: this.portfolioUrl,
       ...toBase(userEntity, this.id, UserRoles.ARTISTE),

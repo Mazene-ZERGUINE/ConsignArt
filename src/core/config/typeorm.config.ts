@@ -20,7 +20,7 @@ export const createTypeOrmConfig = (configService: ConfigService): TypeOrmModule
 
   const common = {
     synchronize: databaseConfig.synchronize,
-    logging: databaseConfig.debugMode,
+    logging: false,
     entities: [
       UserEntity,
       AdminEntity,

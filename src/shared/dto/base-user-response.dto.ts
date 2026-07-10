@@ -23,7 +23,7 @@ export type ArtistUserResponseDto = BaseUserResponseDto<typeof UserRoles.ARTISTE
   nationality: string | null;
   biography: string | null;
   portfolioUrl: string | null;
-  gallery: GalleryUserResponseDto | null;
+  gallery: Pick<GalleryUserResponseDto, 'userId' | 'entityId' | 'galleryVerified' | 'email'> | null;
   joinedGalleryAt: Date | null;
 };
 
