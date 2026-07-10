@@ -5,7 +5,15 @@
  * - Utilisé pour gérer les données / la logique spécifique aux artistes
  */
 
-import { Column, Entity, JoinColumn, ManyToOne, OneToOne, PrimaryGeneratedColumn } from 'typeorm';
+import {
+  Column,
+  Entity,
+  JoinColumn,
+  ManyToOne,
+  OneToMany,
+  OneToOne,
+  PrimaryGeneratedColumn,
+} from 'typeorm';
 import { UserEntity } from '../../users/entities/user.entity';
 import { GalleryEntity } from '../../gallery/entities/gallery.entity';
 import { ArtistUserResponseDto } from '../../../shared/dto/base-user-response.dto';
@@ -15,6 +23,7 @@ import {
   type ActivityStatus,
   ActivityStatusEnum,
 } from '../../../shared/enums/activity-status.enum';
+import { TransferRequestEntity } from '../../../shared/entities/transfer-request.entity';
 
 @Entity('artist_entity')
 export class ArtistEntity {
@@ -52,6 +61,9 @@ export class ArtistEntity {
   @OneToOne(() => UserEntity, (entity) => entity.artist)
   @JoinColumn({ name: 'user_id' })
   public user: UserEntity;
+
+  @OneToMany(() => TransferRequestEntity, (entity) => entity.artistToTransfer)
+  transferRequests: TransferRequestEntity[];
 
   public toArtistDto(userEntity: UserEntity): ArtistUserResponseDto {
     return {
