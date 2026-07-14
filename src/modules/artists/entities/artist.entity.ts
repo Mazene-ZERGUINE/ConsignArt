@@ -24,13 +24,14 @@ import {
   ActivityStatusEnum,
 } from '../../../shared/enums/activity-status.enum';
 import { TransferRequestEntity } from '../../../shared/entities/transfer-request.entity';
+import { ArtWorkEntity } from '../../works-of-art/entities/art-work.entity';
 
 @Entity('artist_entity')
 export class ArtistEntity {
   @PrimaryGeneratedColumn('uuid')
   public id: string;
 
-  @Column('varchar', { name: 'artist_name', length: 255, nullable: true, default: null })
+  @Column('varchar', { name: 'first_name', length: 255, nullable: true, default: null })
   public firstName: string;
 
   @Column('varchar', { name: 'last_name', nullable: true, length: 255, default: null })
@@ -64,6 +65,9 @@ export class ArtistEntity {
 
   @OneToMany(() => TransferRequestEntity, (entity) => entity.artistToTransfer)
   transferRequests: TransferRequestEntity[];
+
+  @OneToMany(() => ArtWorkEntity, (entity) => entity.owner)
+  artWorks: ArtWorkEntity[];
 
   public toArtistDto(): ArtistUserResponseDto {
     return {

@@ -11,6 +11,12 @@ import { ArtistEntity } from '../../modules/artists/entities/artist.entity';
 import { GalleryEntity } from '../../modules/gallery/entities/gallery.entity';
 import { RefreshTokensEntity } from '../../modules/auth/entities/refresh-tokens.entity';
 import { TransferRequestEntity } from '../../shared/entities/transfer-request.entity';
+import { ArtWorkEntity } from '../../modules/works-of-art/entities/art-work.entity';
+import { ArtWorkTransferHistoryEntity } from '../../modules/works-of-art/entities/art-work-transfer-history.entity';
+import { ContractEntity } from '../../modules/sell-contracts/entities/contract.entity';
+import { ReceiptEntity } from '../../modules/sell-contracts/entities/receipt.entity';
+import { InvoiceEntity } from '../../modules/sell-contracts/entities/invoice.entity';
+import { ExpositionEntity } from '../../modules/expositions/entities/exposition.entity';
 
 export const createTypeOrmConfig = (configService: ConfigService): TypeOrmModuleOptions => {
   const env = createEnvConfig(configService);
@@ -29,6 +35,12 @@ export const createTypeOrmConfig = (configService: ConfigService): TypeOrmModule
       GalleryEntity,
       RefreshTokensEntity,
       TransferRequestEntity,
+      ArtWorkEntity,
+      ArtWorkTransferHistoryEntity,
+      ContractEntity,
+      ReceiptEntity,
+      InvoiceEntity,
+      ExpositionEntity,
     ],
   };
 
