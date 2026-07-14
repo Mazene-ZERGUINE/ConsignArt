@@ -1,10 +1,3 @@
-/**
- * AdminEntity
- *
- * - Compose un UserEntity
- * - Utilisé pour gérer les données / la logique spécifique à un admin
- */
-
 import { Entity, JoinColumn, OneToMany, OneToOne, PrimaryGeneratedColumn } from 'typeorm';
 import { UserEntity } from '../../users/entities/user.entity';
 import { GalleryEntity } from '../../gallery/entities/gallery.entity';

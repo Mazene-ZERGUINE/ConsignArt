@@ -13,6 +13,10 @@ export class SignupService {
       throw new InvalidUserRoleException('Only galleries can create artists accounts');
     }
 
+    if (createUserDto.userRole === 'admin') {
+      throw new InvalidUserRoleException('Unauthorized action can not create admin account');
+    }
+
     await this.createUser.execute(createUserDto);
   }
 }

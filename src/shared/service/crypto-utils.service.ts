@@ -1,6 +1,8 @@
 import { Injectable } from '@nestjs/common';
 import * as bcrypt from 'bcrypt';
+import { randomInt } from 'crypto';
 import { ConfigService } from '@nestjs/config';
+import { PASSPHRASE_WORDS } from '../constants/passphrase-words';
 
 @Injectable()
 export class CryptoUtilsService {
@@ -15,5 +17,12 @@ export class CryptoUtilsService {
 
   public async validatePassword(plainText: string, hashedPassword: string): Promise<boolean> {
     return await bcrypt.compare(plainText, hashedPassword);
+  }
+
+  public generatePassphrase(wordCount = 5): string {
+    return Array.from({ length: wordCount }, () => {
+      const word = PASSPHRASE_WORDS[randomInt(PASSPHRASE_WORDS.length)];
+      return word.charAt(0).toUpperCase() + word.slice(1);
+    }).join('-');
   }
 }

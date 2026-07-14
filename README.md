@@ -29,6 +29,11 @@
 - [x] Refresh Token pour obtenir un nouveau Access Token`
 - [x] Refresh Token rotation & revocation
 
+### Gestion des artistes:
+- [x] Ajout d'un artiste par un compte Galerie
+- [x] Demande de transféré d'une galerie par un artiste
+- [x] Validation de transferred par un compte admin 
+
 
 
 

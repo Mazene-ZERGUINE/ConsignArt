@@ -1,10 +1,12 @@
 import {
+  Body,
   Controller,
   Get,
   HttpCode,
   HttpStatus,
   Param,
   Patch,
+  Post,
   Query,
   UseGuards,
 } from '@nestjs/common';
@@ -21,6 +23,9 @@ import {
 import { TransferRequestsResponseDto } from '../../shared/dto/transfer-requests-response.dto';
 import { GetTransferRequestsService } from './services/get-transfer-requests.service';
 import { AcceptOrRefuseTransferRequest } from './services/accept-or-refuse-transfer-request.service';
+import { CreateAdminAccountService } from './services/create-admin-account.service';
+import { CreateAdminDto } from './dto/create-admin.dto';
+import { UserResponseDto } from '../../shared/dto/base-user-response.dto';
 
 @ApiTags('Admin')
 @Controller('admin')
@@ -29,7 +34,19 @@ export class AdminController {
     private readonly validateGalleryAccount: ValidateGalleryAccountService,
     private readonly getTransferRequests: GetTransferRequestsService,
     private readonly acceptOrRefuseTransferRequest: AcceptOrRefuseTransferRequest,
+    private readonly createAdminAccount: CreateAdminAccountService,
   ) {}
+
+  @UseGuards(JwtAccessGuard, AdminRoleGuard)
+  @Post('accounts')
+  @HttpCode(HttpStatus.CREATED)
+  @ApiOperation({
+    description:
+      'Endpoint reserved to admins to create a new admin account. The password is randomly generated (5 words) and returned once in the response.',
+  })
+  public async create(@Body() dto: CreateAdminDto): Promise<UserResponseDto> {
+    return await this.createAdminAccount.execute(dto);
+  }
 
   @UseGuards(JwtAccessGuard, AdminRoleGuard)
   @Get('validate-gallery-account')

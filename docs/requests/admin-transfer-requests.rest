@@ -1,0 +1,46 @@
+### 1. Login as an ADMIN
+POST http://localhost:3000/api/v1/auth/login
+Content-Type: application/json
+
+{
+  "email": "admin@test.com",
+  "password": "Password1234!",
+  "userRole": "admin"
+}
+
+> {%
+  client.global.set("adminAccessToken", response.body.token.accessToken);
+%}
+
+
+### 2. List ALL transfer requests (expected 200 OK with the list of all requests)
+GET http://localhost:3000/api/v1/admin/transfer-requests
+Authorization: Bearer {{adminAccessToken}}
+
+
+### 3. List only PENDING transfer requests (expected 200 OK with the liste of only the requests with pendding status)
+GET http://localhost:3000/api/v1/admin/transfer-requests?status=pending
+Authorization: Bearer {{adminAccessToken}}
+
+
+### 4. List transfer requests as a NON-ADMIN (403 Forbidden)
+POST http://localhost:3000/api/v1/auth/login
+Content-Type: application/json
+
+{
+  "email": "active-gallery@test.com",
+  "password": "Password1234!",
+  "userRole": "gallery"
+}
+
+> {%
+  client.global.set("galleryAccessToken", response.body.token.accessToken);
+%}
+
+###
+GET http://localhost:3000/api/v1/admin/transfer-requests
+Authorization: Bearer {{galleryAccessToken}}
+
+
+### 5. List transfer requests WITHOUT a token (401 Unauthorized)
+GET http://localhost:3000/api/v1/admin/transfer-requests

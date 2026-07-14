@@ -1,0 +1,40 @@
+### 1. Login as an ADMIN
+POST http://localhost:3000/api/v1/auth/login
+Content-Type: application/json
+
+{
+  "email": "admin@test.com",
+  "password": "Password1234!",
+  "userRole": "admin"
+}
+
+> {%
+  client.global.set("adminAccessToken", response.body.token.accessToken);
+%}
+
+
+### 2. List only PENDING transfer requests (expected 200 OK with the liste of only the requests with pendding status)
+GET http://localhost:3000/api/v1/admin/transfer-requests?status=pending
+Authorization: Bearer {{adminAccessToken}}
+
+
+### 3. APPROVE a pending transfer request (204 No Content)
+PATCH http://localhost:3000/api/v1/admin/transfer-requests/{{transferRequestId}}/action?actionType=approve
+Authorization: Bearer {{adminAccessToken}}
+
+
+### 4. approve the same request again (400 Bad Request)
+PATCH http://localhost:3000/api/v1/admin/transfer-requests/{{transferRequestId}}/action?actionType=reject
+Authorization: Bearer {{adminAccessToken}}
+
+
+### 5. approve a non existing request (404 Not Found)
+PATCH http://localhost:3000/api/v1/admin/transfer-requests/99999999-9999-9999-9999-999999999999/action?
+    actionType=approve
+Authorization: Bearer {{adminAccessToken}}
+
+
+
+### 6. approve a request as a NON-ADMIN (403 Forbidden)
+PATCH http://localhost:3000/api/v1/admin/transfer-requests/{{transferRequestId}}/action?actionType=approve
+Authorization: Bearer {{galleryAccessToken}}

@@ -1,0 +1,64 @@
+### 1. Signup as a GALLERY account (allowed, 201 Created)
+POST http://localhost:3000/api/v1/auth/signup
+Content-Type: application/json
+
+{
+  "email": "new-gallery@test.com",
+  "password": "Password1234!",
+  "userRole": "gallery"
+}
+
+
+### 2. Signup as a COLLECTOR account (allowed, 201 Created)
+POST http://localhost:3000/api/v1/auth/signup
+Content-Type: application/json
+
+{
+  "email": "new-collector@test.com",
+  "password": "Password1234!",
+  "userRole": "collector"
+}
+
+
+### 3. Signup as an ADMIN account (blocked  401 Unauthorized, only an admin can create admins)
+POST http://localhost:3000/api/v1/auth/signup
+Content-Type: application/json
+
+{
+  "email": "new-admin@test.com",
+  "password": "Password1234!",
+  "userRole": "admin"
+}
+
+
+### 4. Signup as an ARTIST account (blocked 401 Unauthorized, only a gallery can add artists)
+POST http://localhost:3000/api/v1/auth/signup
+Content-Type: application/json
+
+{
+  "email": "new-artist@test.com",
+  "password": "Password1234!",
+  "userRole": "artiste"
+}
+
+
+### 5. Signup with an already existing account (409 Conflict expected)
+POST http://localhost:3000/api/v1/auth/signup
+Content-Type: application/json
+
+{
+  "email": "new-gallery@test.com",
+  "password": "Password1234!",
+  "userRole": "gallery"
+}
+
+
+### 6. Signup with an invalid body (400 Bad Request)
+POST http://localhost:3000/api/v1/auth/signup
+Content-Type: application/json
+
+{
+  "email": "not-an-email",
+  "password": "short",
+  "userRole": "wizard"
+}

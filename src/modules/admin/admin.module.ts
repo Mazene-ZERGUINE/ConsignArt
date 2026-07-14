@@ -10,6 +10,7 @@ import { GalleryEntity } from '../gallery/entities/gallery.entity';
 import { GetTransferRequestsService } from './services/get-transfer-requests.service';
 import { TransferRequestEntity } from '../../shared/entities/transfer-request.entity';
 import { AcceptOrRefuseTransferRequest } from './services/accept-or-refuse-transfer-request.service';
+import { CreateAdminAccountService } from './services/create-admin-account.service';
 
 @Module({
   imports: [
@@ -19,6 +20,7 @@ import { AcceptOrRefuseTransferRequest } from './services/accept-or-refuse-trans
   ],
   providers: [
     CreateAdminService,
+    CreateAdminAccountService,
     ValidateGalleryAccountService,
     GetTransferRequestsService,
     AcceptOrRefuseTransferRequest,
