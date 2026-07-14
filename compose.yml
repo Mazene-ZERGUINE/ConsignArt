@@ -21,5 +21,6 @@ services:
       - ./.env.development:/app/.env.development
       - /app/node_modules
       - ./data:/app/data
+      - ./logs:/app/logs
     command: npm run start:dev
     restart: unless-stopped
