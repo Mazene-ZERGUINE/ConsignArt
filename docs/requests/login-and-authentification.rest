@@ -9,8 +9,8 @@ Content-Type: application/json
 }
 
 > {%
-  client.global.set("adminAccessToken", response.body.token.accessToken);
-  client.global.set("adminRefreshToken", response.body.token.refreshToken);
+  client.global.set("adminAccessToken", response.body.data.token.accessToken);
+  client.global.set("adminRefreshToken", response.body.data.token.refreshToken);
 %}
 
 ### Get ADMIN account information (200 OK)
@@ -23,13 +23,13 @@ POST http://localhost:3000/api/v1/auth/login
 Content-Type: application/json
 
 {
-  "email": "active-gallery@test.com",
+  "email": "new-gallery2@test.com",
   "password": "Password1234!",
   "userRole": "gallery"
 }
 
 > {%
-  client.global.set("galleryAccessToken", response.body.token.accessToken);
+  client.global.set("galleryAccessToken", response.body.data.token.accessToken);
 %}
 
 ### Get GALLERY information (200 OK)
@@ -60,7 +60,7 @@ Content-Type: application/json
 }
 
 > {%
-  client.global.set("artistAccessToken", response.body.token.accessToken);
+  client.global.set("artistAccessToken", response.body.data.token.accessToken);
 %}
 
 ### Get ARTIST information (200 OK)
@@ -83,7 +83,7 @@ Content-Type: application/json
   client.test("Collector login succeeds", function () {
     client.assert(response.status === 200, "Expected 200, got " + response.status);
   });
-  client.global.set("collectorAccessToken", response.body.token.accessToken);
+  client.global.set("collectorAccessToken", response.body.data.token.accessToken);
 %}
 
 ### Get COLLECTOR information (200 OK)

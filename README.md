@@ -70,9 +70,9 @@
 
 ### Interceptors:
 
-- [ ] Interceptor de transformation : formate toutes les réponses API dans un enveloppe standard ( { data, meta,
+- [x] Interceptor de transformation : formate toutes les réponses API dans un enveloppe standard ( { data, meta,
   timestamp } )
-- [ ] Interceptor de logging : enregistre chaque requête (méthode, route, durée, utilisateur) dans un fichier ou en
+- [x] Interceptor de logging : enregistre chaque requête (méthode, route, durée, utilisateur) dans un fichier ou en
   base
 - [ ] Interceptor de cache (optionnel) : met en cache les réponses des endpoints de consultation publique
 

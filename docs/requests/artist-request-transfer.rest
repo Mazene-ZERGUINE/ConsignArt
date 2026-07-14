@@ -9,7 +9,7 @@ Content-Type: application/json
 }
 
 > {%
-  client.global.set("artistAccessToken", response.body.token.accessToken);
+  client.global.set("artistAccessToken", response.body.data.token.accessToken);
 %}
 
 
