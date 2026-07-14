@@ -24,6 +24,11 @@ export const createTypeOrmConfig = (configService: ConfigService): TypeOrmModule
 
   Logger.warn(`App is running using driver: ${databaseConfig.databaseDriver}`, 'TypeOrmConfig');
 
+  Logger.warn(
+    `synchronize=${databaseConfig.synchronize} (type ${typeof databaseConfig.synchronize})`,
+    'TypeOrmConfig',
+  );
+
   const common = {
     synchronize: databaseConfig.synchronize,
     logging: false,
