@@ -46,19 +46,19 @@ export class UserEntity {
     switch (this.userRole) {
       case UserRoles.ADMIN:
         if (!this.admin) throw new RelationNotLoadedException('admin');
-        return this.admin.toAdminDto(this);
+        return this.admin.toAdminDto();
 
       case UserRoles.ARTISTE:
         if (!this.artist) throw new RelationNotLoadedException('artist');
-        return this.artist.toArtistDto(this);
+        return this.artist.toArtistDto();
 
       case UserRoles.GALLERY:
         if (!this.gallery) throw new RelationNotLoadedException('gallery');
-        return this.gallery.toGalleryDto(this);
+        return this.gallery.toGalleryDto();
 
       case UserRoles.COLLECTOR:
         if (!this.collector) throw new RelationNotLoadedException('collector');
-        return this.collector.toCollectorDto(this);
+        return this.collector.toCollectorDto();
 
       default: {
         throw new InvalidUserRoleException();

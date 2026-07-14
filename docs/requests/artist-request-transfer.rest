@@ -1,0 +1,56 @@
+### 1. Login as an ARTIST
+POST http://localhost:3000/api/v1/auth/login
+Content-Type: application/json
+
+{
+  "email": "artist@test.com",
+  "password": "Password1234!",
+  "userRole": "artiste"
+}
+
+> {%
+  client.global.set("artistAccessToken", response.body.token.accessToken);
+%}
+
+
+### 3. Artist requests a transfer to another gallery (201 Created)
+POST http://localhost:3000/api/v1/artists/request-transfer
+Content-Type: application/json
+Authorization: Bearer {{artistAccessToken}}
+
+{
+  "newGalleryId": "{{targetGalleryUserId}}",
+  "reason": "Looking for a gallery specialized in contemporary art."
+}
+
+
+### 4. Request a transfer again while one is PENDING (409 Conflict)
+POST http://localhost:3000/api/v1/artists/request-transfer
+Content-Type: application/json
+Authorization: Bearer {{artistAccessToken}}
+
+{
+  "newGalleryId": "{{targetGalleryUserId}}",
+  "reason": "Second attempt while the first is still pending."
+}
+
+
+### 5. Request a transfer to a NON-EXISTENT gallery (404 Not Found)
+POST http://localhost:3000/api/v1/artists/request-transfer
+Content-Type: application/json
+Authorization: Bearer {{artistAccessToken}}
+
+{
+  "newGalleryId": "99999999-9999-9999-9999-999999999999",
+  "reason": "Transfer to a gallery that does not exist."
+}
+
+
+### 6. Request a transfer with an INVALID body (400 Bad Request)
+POST http://localhost:3000/api/v1/artists/request-transfer
+Content-Type: application/json
+Authorization: Bearer {{artistAccessToken}}
+
+{
+  "newGalleryId": "not-a-uuid"
+}

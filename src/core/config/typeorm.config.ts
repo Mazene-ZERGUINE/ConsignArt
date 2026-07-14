@@ -10,6 +10,7 @@ import { CollectorEntity } from '../../modules/collector/collector.entity';
 import { ArtistEntity } from '../../modules/artists/entities/artist.entity';
 import { GalleryEntity } from '../../modules/gallery/entities/gallery.entity';
 import { RefreshTokensEntity } from '../../modules/auth/entities/refresh-tokens.entity';
+import { TransferRequestEntity } from '../../shared/entities/transfer-request.entity';
 
 export const createTypeOrmConfig = (configService: ConfigService): TypeOrmModuleOptions => {
   const env = createEnvConfig(configService);
@@ -19,7 +20,7 @@ export const createTypeOrmConfig = (configService: ConfigService): TypeOrmModule
 
   const common = {
     synchronize: databaseConfig.synchronize,
-    logging: databaseConfig.debugMode,
+    logging: false,
     entities: [
       UserEntity,
       AdminEntity,
@@ -27,6 +28,7 @@ export const createTypeOrmConfig = (configService: ConfigService): TypeOrmModule
       ArtistEntity,
       GalleryEntity,
       RefreshTokensEntity,
+      TransferRequestEntity,
     ],
   };
 

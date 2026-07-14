@@ -1,0 +1,146 @@
+### 1. Login as an ADMIN account (200 OK, returns admin info + tokens)
+POST http://localhost:3000/api/v1/auth/login
+Content-Type: application/json
+
+{
+  "email": "admin@test.com",
+  "password": "Password1234!",
+  "userRole": "admin"
+}
+
+> {%
+  client.global.set("adminAccessToken", response.body.token.accessToken);
+  client.global.set("adminRefreshToken", response.body.token.refreshToken);
+%}
+
+### Get ADMIN account information (200 OK)
+GET http://localhost:3000/api/v1/auth/me
+Authorization: Bearer {{adminAccessToken}}
+
+
+### 2. Login as an ACTIVE (validated) GALLERY account (200 OK)
+POST http://localhost:3000/api/v1/auth/login
+Content-Type: application/json
+
+{
+  "email": "active-gallery@test.com",
+  "password": "Password1234!",
+  "userRole": "gallery"
+}
+
+> {%
+  client.global.set("galleryAccessToken", response.body.token.accessToken);
+%}
+
+### Get GALLERY information (200 OK)
+GET http://localhost:3000/api/v1/auth/me
+Authorization: Bearer {{galleryAccessToken}}
+
+
+
+### 3. Login as a NON-ACTIVE (non-validated) GALLERY (403 Forbidden)
+POST http://localhost:3000/api/v1/auth/login
+Content-Type: application/json
+
+{
+  "email": "inactive-gallery@test.com",
+  "password": "Password1234!",
+  "userRole": "gallery"
+}
+
+
+### 4. Login as an ARTIST account (200 OK)
+POST http://localhost:3000/api/v1/auth/login
+Content-Type: application/json
+
+{
+  "email": "artist@test.com",
+  "password": "Password1234!",
+  "userRole": "artiste"
+}
+
+> {%
+  client.global.set("artistAccessToken", response.body.token.accessToken);
+%}
+
+### Get ARTIST information (200 OK)
+GET http://localhost:3000/api/v1/auth/me
+Authorization: Bearer {{artistAccessToken}}
+
+
+
+### 5. Login as a COLLECTOR account (200 OK)
+POST http://localhost:3000/api/v1/auth/login
+Content-Type: application/json
+
+{
+  "email": "collector@test.com",
+  "password": "Password1234!",
+  "userRole": "collector"
+}
+
+> {%
+  client.test("Collector login succeeds", function () {
+    client.assert(response.status === 200, "Expected 200, got " + response.status);
+  });
+  client.global.set("collectorAccessToken", response.body.token.accessToken);
+%}
+
+### Get COLLECTOR information (200 OK)
+GET http://localhost:3000/api/v1/auth/me
+Authorization: Bearer {{collectorAccessToken}}
+
+> {%
+  client.test("Authenticated collector profile is returned", function () {
+    client.assert(response.status === 200, "Expected 200, got " + response.status);
+  });
+%}
+
+
+### 6. Login with a WRONG PASSWORD (401 Unauthorized)
+POST http://localhost:3000/api/v1/auth/login
+Content-Type: application/json
+
+{
+  "email": "admin@test.com",
+  "password": "WrongPassword99!",
+  "userRole": "admin"
+}
+
+
+
+### 7. Login with an UNKNOWN account (401 Unauthorized)
+POST http://localhost:3000/api/v1/auth/login
+Content-Type: application/json
+
+{
+  "email": "ghost@test.com",
+  "password": "Password1234!",
+  "userRole": "collector"
+}
+
+
+
+### 8. Login with an INVALID body (400 Bad Request)
+POST http://localhost:3000/api/v1/auth/login
+Content-Type: application/json
+
+{
+  "email": "admin@test.com",
+  "password": "Password1234!"
+}
+
+
+### 9. Access a protected route WITHOUT a token (401 Unauthorized)
+GET http://localhost:3000/api/v1/auth/me
+
+
+### 10. Refresh the tokens (200 OK)
+POST http://localhost:3000/api/v1/auth/refresh-token
+Cookie: refreshToken={{adminRefreshToken}}
+
+
+
+
+### 11. Refresh WITHOUT a refresh token cookie (401 Unauthorized)
+POST http://localhost:3000/api/v1/auth/refresh-token

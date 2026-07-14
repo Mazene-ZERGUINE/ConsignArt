@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
-import { AuthTokenDto, JwtToken } from '../dto/response/auth-token.dto';
+import { AuthTokenDto, JwtToken } from '../dto/auth-token.dto';
 import { UserEntity } from '../../users/entities/user.entity';
-import { LoginDto } from '../dto/request/login.dto';
+import { LoginDto } from '../dto/login.dto';
 import { InvalidCredentialsException } from '../exceptions/invalid-credentials.exception';
 import { CryptoUtilsService } from '../../../shared/service/crypto-utils.service';
 import { UserRoles } from '../../../shared/enums/user-roles.enum';

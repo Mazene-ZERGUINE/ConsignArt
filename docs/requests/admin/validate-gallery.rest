@@ -1,4 +1,0 @@
-### Admin Gallery validation protected route
-GET http://localhost:3000/api/v1/admin/validate-gallery-account?galleryId=56fb6dff-eb17-4170-b643-2a0d33638e35
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJjYjgzNjdhMC0yNjQ4LTQwYTgtYjQ3Yy1kMWRmMTlkMTk0NTIiLCJyb2xlIjoiYXJ0aXN0ZSIsImVtYWlsIjoiYXJ0aXN0LWV4YW1wbGVAZW1haWwuZnIiLCJpYXQiOjE3ODM2MTUxNzYsImV4cCI6MTc4MzYxNjA3Nn0.EM5RpTGDyxZ4u7g1HPsE1HlFEF-MStB6FfuB63gUTfs
-

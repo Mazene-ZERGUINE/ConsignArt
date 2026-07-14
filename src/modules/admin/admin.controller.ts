@@ -1,15 +1,52 @@
-import { Controller, Get, HttpCode, HttpStatus, Query, UseGuards } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Get,
+  HttpCode,
+  HttpStatus,
+  Param,
+  Patch,
+  Post,
+  Query,
+  UseGuards,
+} from '@nestjs/common';
 import { ApiOperation, ApiTags } from '@nestjs/swagger';
 import { ValidateGalleryAccountService } from './services/validate-gallery-account.service';
 import { AuthUser } from '../../shared/decorators/authenticated-user.decorator';
 import { type AuthenticatedUser } from '../../core/types/authenticated-user.types';
 import { JwtAccessGuard } from '../../core/guards/jwt-access.guard';
 import { AdminRoleGuard } from '../../core/guards/admin-role.guard';
+import {
+  TransferRequestActionType,
+  type TransferRequestStatus,
+} from '../../shared/enums/transfer-request.status.enum';
+import { TransferRequestsResponseDto } from '../../shared/dto/transfer-requests-response.dto';
+import { GetTransferRequestsService } from './services/get-transfer-requests.service';
+import { AcceptOrRefuseTransferRequest } from './services/accept-or-refuse-transfer-request.service';
+import { CreateAdminAccountService } from './services/create-admin-account.service';
+import { CreateAdminDto } from './dto/create-admin.dto';
+import { UserResponseDto } from '../../shared/dto/base-user-response.dto';
 
 @ApiTags('Admin')
 @Controller('admin')
 export class AdminController {
-  constructor(private readonly validateGalleryAccount: ValidateGalleryAccountService) {}
+  constructor(
+    private readonly validateGalleryAccount: ValidateGalleryAccountService,
+    private readonly getTransferRequests: GetTransferRequestsService,
+    private readonly acceptOrRefuseTransferRequest: AcceptOrRefuseTransferRequest,
+    private readonly createAdminAccount: CreateAdminAccountService,
+  ) {}
+
+  @UseGuards(JwtAccessGuard, AdminRoleGuard)
+  @Post('accounts')
+  @HttpCode(HttpStatus.CREATED)
+  @ApiOperation({
+    description:
+      'Endpoint reserved to admins to create a new admin account. The password is randomly generated (5 words) and returned once in the response.',
+  })
+  public async create(@Body() dto: CreateAdminDto): Promise<UserResponseDto> {
+    return await this.createAdminAccount.execute(dto);
+  }
 
   @UseGuards(JwtAccessGuard, AdminRoleGuard)
   @Get('validate-gallery-account')
@@ -22,5 +59,30 @@ export class AdminController {
     @AuthUser() user: AuthenticatedUser,
   ): Promise<void> {
     await this.validateGalleryAccount.execute(galleryId, user.userId);
+  }
+
+  @UseGuards(JwtAccessGuard, AdminRoleGuard)
+  @Get('transfer-requests')
+  @HttpCode(HttpStatus.OK)
+  @ApiOperation({
+    description: 'Endpoint used for admins to view all transfer requests',
+  })
+  public async fetchTransferRequests(
+    @Query('status') transferStatus?: TransferRequestStatus,
+  ): Promise<TransferRequestsResponseDto[]> {
+    return await this.getTransferRequests.execute(transferStatus);
+  }
+
+  @UseGuards(JwtAccessGuard, AdminRoleGuard)
+  @Patch('transfer-requests/:id/action')
+  @HttpCode(HttpStatus.NO_CONTENT)
+  @ApiOperation({
+    description: 'Endpoint used by admins to accept or reject a transfer request',
+  })
+  public async handleTransferRequest(
+    @Param('id') transferRequestId: string,
+    @Query('actionType') actionType: TransferRequestActionType,
+  ): Promise<void> {
+    await this.acceptOrRefuseTransferRequest.execute(transferRequestId, actionType);
   }
 }

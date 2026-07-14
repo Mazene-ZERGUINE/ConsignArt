@@ -43,15 +43,13 @@ export class GalleryEntity {
   @OneToMany(() => ArtistEntity, (entity) => entity.gallery)
   artists: ArtistEntity[];
 
-  public toGalleryDto(userEntity: UserEntity): GalleryUserResponseDto {
+  public toGalleryDto(): GalleryUserResponseDto {
     return {
-      ...toBase(userEntity, this.id, UserRoles.GALLERY),
+      ...toBase(this.user, this.id, UserRoles.GALLERY),
       galleryVerified: this.isValidated,
       validatedAt: this.validatedAt,
-      validatedByAdmin: this.validatedByAdmin
-        ? this.validatedByAdmin.toAdminDto(this.validatedByAdmin.user)
-        : null,
-      associatedArtists: (this.artists ?? []).map((artist) => artist.toArtistDto(artist.user)),
+      validatedByAdmin: this.validatedByAdmin ? this.validatedByAdmin.toAdminDto() : null,
+      associatedArtists: (this.artists ?? []).map((artist) => artist.toArtistDto()),
     };
   }
 }

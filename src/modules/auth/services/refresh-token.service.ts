@@ -1,5 +1,5 @@
 import { Injectable, UnauthorizedException } from '@nestjs/common';
-import { AuthTokenDto } from '../dto/response/auth-token.dto';
+import { AuthTokenDto } from '../dto/auth-token.dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { RefreshTokensEntity } from '../entities/refresh-tokens.entity';
 import { Repository } from 'typeorm';

@@ -1,0 +1,69 @@
+### 1. Login as an ADMIN
+POST http://localhost:3000/api/v1/auth/login
+Content-Type: application/json
+
+{
+  "email": "admin@test.com",
+  "password": "Password1234!",
+  "userRole": "admin"
+}
+
+> {%
+  client.global.set("adminAccessToken", response.body.token.accessToken);
+%}
+
+
+### 2. Create a new admin account (201 Created)
+POST http://localhost:3000/api/v1/admin/accounts
+Content-Type: application/json
+Authorization: Bearer {{adminAccessToken}}
+
+{
+  "email": "second-admin@test.com"
+}
+
+
+### 3. Create an admin with an ALREADY EXISTING email (409 Conflict)
+POST http://localhost:3000/api/v1/admin/accounts
+Content-Type: application/json
+Authorization: Bearer {{adminAccessToken}}
+
+{
+  "email": "second-admin@test.com"
+}
+
+
+### 4. Create an admin with an INVALID body (400 Bad Request)
+POST http://localhost:3000/api/v1/admin/accounts
+Content-Type: application/json
+Authorization: Bearer {{adminAccessToken}}
+
+{
+  "email": "not-an-email"
+}
+
+
+### 5. Login as a (non-admin) GALLERY account
+POST http://localhost:3000/api/v1/auth/login
+Content-Type: application/json
+
+{
+  "email": "active-gallery@test.com",
+  "password": "Password1234!",
+  "userRole": "gallery"
+}
+
+> {%
+  client.global.set("galleryAccessToken", response.body.token.accessToken);
+%}
+
+
+### 6. Create an admin as a NON-ADMIN user (403 Forbidden)
+POST http://localhost:3000/api/v1/admin/accounts
+Content-Type: application/json
+Authorization: Bearer {{galleryAccessToken}}
+
+{
+  "email": "third-admin@test.com"
+}
+

@@ -9,7 +9,7 @@ export class GalleryRoleGuard implements CanActivate {
 
     if (!user) throw new ForbiddenException('no authenticated user');
     if (user.role !== UserRoles.GALLERY) {
-      throw new ForbiddenException('galelry role required');
+      throw new ForbiddenException('gallery role required');
     }
     return true;
   }

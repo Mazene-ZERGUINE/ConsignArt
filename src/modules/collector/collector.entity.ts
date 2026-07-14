@@ -13,9 +13,9 @@ export class CollectorEntity {
   @JoinColumn({ name: 'user_id' })
   user: UserEntity;
 
-  public toCollectorDto(userEntity: UserEntity): CollectorUserResponseDto {
+  public toCollectorDto(): CollectorUserResponseDto {
     return {
-      ...toBase(userEntity, this.id, UserRoles.COLLECTOR),
+      ...toBase(this.user, this.id, UserRoles.COLLECTOR),
     };
   }
 }

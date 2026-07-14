@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, Logger } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { UserEntity } from '../entities/user.entity';
 import { FindOptionsRelations, Repository } from 'typeorm';
@@ -21,13 +21,18 @@ export class GetUserService {
       where,
       select: { userId: true, userRole: true },
     });
-    if (!base) throw new InvalidCredentialsException();
-
+    if (!base) {
+      Logger.debug(`User with ${email ? 'email' : 'id'} ${email ?? id} not found`);
+      throw new InvalidCredentialsException();
+    }
     const user = await this.userRepository.findOne({
       where: { userId: base.userId },
       relations: this.relationsForRole(base.userRole),
     });
-    if (!user) throw new InvalidCredentialsException();
+    if (!user) {
+      Logger.debug(`User with id ${base.userId} and role ${base.userRole} not found`);
+      throw new InvalidCredentialsException();
+    }
 
     return user;
   }
@@ -35,14 +40,18 @@ export class GetUserService {
   private relationsForRole(role: UserRole): FindOptionsRelations<UserEntity> {
     switch (role) {
       case UserRoles.ADMIN:
-        return { admin: true };
+        return { admin: { user: true } };
       case UserRoles.ARTISTE:
-        return { artist: true };
+        return { artist: { user: true, gallery: { user: true } } };
       case UserRoles.COLLECTOR:
-        return { collector: true };
+        return { collector: { user: true } };
       case UserRoles.GALLERY:
         return {
-          gallery: true,
+          gallery: {
+            user: true,
+            validatedByAdmin: { user: true },
+            artists: { user: true, gallery: { user: true } },
+          },
         };
     }
   }

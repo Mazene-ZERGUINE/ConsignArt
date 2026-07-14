@@ -1,0 +1,103 @@
+### 1. Login as an ACTIVE GALLERY account
+POST http://localhost:3000/api/v1/auth/login
+Content-Type: application/json
+
+{
+  "email": "active-gallery@test.com",
+  "password": "Password1234!",
+  "userRole": "gallery"
+}
+
+> {%
+  client.global.set("galleryAccessToken", response.body.token.accessToken);
+%}
+
+
+### 2. Gallery creates an artist account (200 OK)
+POST http://localhost:3000/api/v1/gallery/add-artist
+Content-Type: application/json
+Authorization: Bearer {{galleryAccessToken}}
+
+{
+  "createUserDto": {
+    "email": "gallery-artist@test.com",
+    "password": "Password1234!",
+    "userRole": "artiste"
+  },
+  "firstName": "John",
+  "lastName": "Doe",
+  "bio": "Contemporary painter exploring urban landscapes.",
+  "portfolioUrl": "https://portfolio.example.com/john-doe",
+  "nationality": "French"
+}
+
+
+
+### 3. Add an artist with an ALREADY EXISTING email (409 Conflict)
+POST http://localhost:3000/api/v1/gallery/add-artist
+Content-Type: application/json
+Authorization: Bearer {{galleryAccessToken}}
+
+{
+  "createUserDto": {
+    "email": "gallery-artist@test.com",
+    "password": "Password1234!",
+    "userRole": "artiste"
+  },
+  "firstName": "John",
+  "lastName": "Doe",
+  "bio": "Contemporary painter exploring urban landscapes.",
+  "portfolioUrl": "https://portfolio.example.com/john-doe",
+  "nationality": "French"
+}
+
+
+### 4. Add an artist with an INVALID body (400 Bad Request)
+POST http://localhost:3000/api/v1/gallery/add-artist
+Content-Type: application/json
+Authorization: Bearer {{galleryAccessToken}}
+
+{
+  "createUserDto": {
+    "email": "not-an-email",
+    "password": "short",
+    "userRole": "artiste"
+  },
+  "firstName": "",
+  "portfolioUrl": "not-a-url"
+}
+
+
+
+### 5. Login as a (non-gallery) COLLECTOR account
+POST http://localhost:3000/api/v1/auth/login
+Content-Type: application/json
+
+{
+  "email": "collector@test.com",
+  "password": "Password1234!",
+  "userRole": "collector"
+}
+
+> {%
+  client.global.set("collectorAccessToken", response.body.token.accessToken);
+%}
+
+
+### 6. Add an artist as a NON-GALLERY user (403 Forbidden)
+POST http://localhost:3000/api/v1/gallery/add-artist
+Content-Type: application/json
+Authorization: Bearer {{collectorAccessToken}}
+
+{
+  "createUserDto": {
+    "email": "another-artist@test.com",
+    "password": "Password1234!",
+    "userRole": "artiste"
+  },
+  "firstName": "Jane",
+  "lastName": "Roe",
+  "bio": "Sculptor.",
+  "portfolioUrl": "https://portfolio.example.com/jane-roe",
+  "nationality": "Belgian"
+}
