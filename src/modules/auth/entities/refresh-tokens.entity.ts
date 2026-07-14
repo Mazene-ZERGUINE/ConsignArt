@@ -1,10 +1,3 @@
-/**
- * RefreshTokensEntity
- *
- * - Compose un UserEntity
- * - Utilisé pour gérer les refresh tokens (création, expiration, révocation)
- */
-
 import {
   Column,
   CreateDateColumn,
@@ -26,7 +19,7 @@ export class RefreshTokensEntity {
   @Column('boolean', { name: 'is_revoked', default: false, nullable: false })
   isRevoked: boolean;
 
-  @Column('datetime', { name: 'expires_at', nullable: false })
+  @Column('date', { name: 'expires_at', nullable: false })
   expiresAt: Date;
 
   @CreateDateColumn({ name: 'created_at' })

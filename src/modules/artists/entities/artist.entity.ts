@@ -53,7 +53,7 @@ export class ArtistEntity {
   })
   public status: ActivityStatus;
 
-  @Column('datetime', { name: 'joined_gallery_at', default: null, nullable: true })
+  @Column('date', { name: 'joined_gallery_at', default: null, nullable: true })
   public joinedGalleryAt: Date;
 
   @ManyToOne(() => GalleryEntity, (entity) => entity.artists)

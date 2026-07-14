@@ -31,7 +31,7 @@ export class GalleryEntity {
   @Column('boolean', { name: 'is_validated', default: false, nullable: false })
   isValidated: boolean;
 
-  @Column('datetime', { name: 'validated_at', nullable: true })
+  @Column('date', { name: 'validated_at', nullable: true })
   validatedAt: Date | null;
 
   @ManyToOne(() => AdminEntity, (entity) => entity.validatedGalleries, { nullable: true })
