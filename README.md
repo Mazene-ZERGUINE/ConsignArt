@@ -88,7 +88,7 @@
 - [x] Relations : ManyToOne, OneToMany, ManyToMany
 - [x] Transactions : une opération critique (ex. : vente d'une œuvre avec mise à jour du solde artiste) doit se faire
   dans une transaction
-- [ ] Migrations : le projet doit inclure des migrations pour créer le schéma de base.
+- [x] Migrations : le projet doit inclure des migrations pour créer le schéma de base.
 - [ ] Index : au moins un index sur une colonne fréquemment interrogée
 
 ### Tests:

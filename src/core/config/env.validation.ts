@@ -1,5 +1,11 @@
-import { Type } from 'class-transformer';
+import { Transform, Type } from 'class-transformer';
 import { IsBoolean, IsEnum, IsInt, IsNotEmpty, IsString, Max, Min } from 'class-validator';
+
+const toBoolean = ({ value }: { value: unknown }) => {
+  if (typeof value === 'boolean') return value;
+  if (typeof value === 'string') return value.trim().toLowerCase() === 'true';
+  return value;
+};
 
 export class EnvValidation {
   @IsEnum(['development', 'production'])
@@ -15,6 +21,7 @@ export class EnvValidation {
   @IsNotEmpty()
   SERVER_HOST!: string;
 
+  @Transform(toBoolean)
   @IsBoolean()
   SERVER_DEBUG_MODE!: boolean;
 
@@ -43,9 +50,11 @@ export class EnvValidation {
   @IsNotEmpty()
   DB_DATABASE!: string;
 
+  @Transform(toBoolean)
   @IsBoolean()
   DB_SYNCHRONIZE!: boolean;
 
+  @Transform(toBoolean)
   @IsBoolean()
   DB_DEBUG_MODE!: boolean;
 

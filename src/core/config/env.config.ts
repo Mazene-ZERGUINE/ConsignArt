@@ -13,9 +13,7 @@ export function getEnvFilePath(): string {
 }
 
 function validateEnv(env: Record<string, unknown>): EnvValidation {
-  const validated = plainToInstance(EnvValidation, env, {
-    enableImplicitConversion: true,
-  });
+  const validated = plainToInstance(EnvValidation, env);
 
   const errors = validateSync(validated, {
     skipMissingProperties: false,

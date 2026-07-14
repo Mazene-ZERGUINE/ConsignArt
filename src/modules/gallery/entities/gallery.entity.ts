@@ -17,6 +17,8 @@ import {
 import { UserEntity } from '../../users/entities/user.entity';
 import { ArtistEntity } from '../../artists/entities/artist.entity';
 import { AdminEntity } from '../../admin/entities/admin.entity';
+import { ArtWorkEntity } from '../../works-of-art/entities/art-work.entity';
+import { ExpositionEntity } from '../../expositions/entities/exposition.entity';
 import { GalleryUserResponseDto } from '../../../shared/dto/base-user-response.dto';
 import { UserRoles } from '../../../shared/enums/user-roles.enum';
 import { toBase } from '../../../shared/utils/users-dto.mappers';
@@ -29,7 +31,7 @@ export class GalleryEntity {
   @Column('boolean', { name: 'is_validated', default: false, nullable: false })
   isValidated: boolean;
 
-  @Column('datetime', { name: 'validated_at', nullable: true })
+  @Column('date', { name: 'validated_at', nullable: true })
   validatedAt: Date | null;
 
   @ManyToOne(() => AdminEntity, (entity) => entity.validatedGalleries, { nullable: true })
@@ -42,6 +44,12 @@ export class GalleryEntity {
 
   @OneToMany(() => ArtistEntity, (entity) => entity.gallery)
   artists: ArtistEntity[];
+
+  @OneToMany(() => ArtWorkEntity, (entity) => entity.gallery)
+  artWorks: ArtWorkEntity[];
+
+  @OneToMany(() => ExpositionEntity, (entity) => entity.gallery)
+  expositions: ExpositionEntity[];
 
   public toGalleryDto(): GalleryUserResponseDto {
     return {
