@@ -9,7 +9,7 @@ Content-Type: application/json
 }
 
 > {%
-  client.global.set("galleryAccessToken", response.body.token.accessToken);
+  client.global.set("galleryAccessToken", response.body.data.token.accessToken);
 %}
 
 
@@ -80,7 +80,7 @@ Content-Type: application/json
 }
 
 > {%
-  client.global.set("collectorAccessToken", response.body.token.accessToken);
+  client.global.set("collectorAccessToken", response.body.data.token.accessToken);
 %}
 
 

@@ -9,7 +9,7 @@ Content-Type: application/json
 }
 
 > {%
-  client.global.set("adminAccessToken", response.body.token.accessToken);
+  client.global.set("adminAccessToken", response.body.data.token.accessToken);
 %}
 
 
@@ -41,7 +41,7 @@ Content-Type: application/json
 }
 
 > {%
-  client.global.set("collectorAccessToken", response.body.token.accessToken);
+  client.global.set("collectorAccessToken", response.body.data.token.accessToken);
 %}
 
 
