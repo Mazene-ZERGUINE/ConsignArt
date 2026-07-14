@@ -7,6 +7,8 @@ import { Logger } from '@nestjs/common';
 import { GlobalExceptionsHandlerFilter } from './core/filter/global-exception-handler.filter';
 import { createDtoValidationPipe } from './core/pipes/dto-validation-options.pipe';
 import cookieParser from 'cookie-parser';
+import { ApiResponseTransformationInterceptor } from './core/interceptors/api-response-transformation.interceptor';
+import { RequestsLoggerInterceptor } from './core/interceptors/requests-logger.interceptor';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
@@ -18,6 +20,11 @@ async function bootstrap() {
 
   app.useGlobalFilters(new GlobalExceptionsHandlerFilter());
   app.useGlobalPipes(createDtoValidationPipe());
+
+  app.useGlobalInterceptors(
+    new ApiResponseTransformationInterceptor(),
+    new RequestsLoggerInterceptor(),
+  );
 
   createSwaggerConfig(app);
 
