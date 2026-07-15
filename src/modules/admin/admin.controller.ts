@@ -44,7 +44,10 @@ export class AdminController {
     description:
       'Endpoint reserved to admins to create a new admin account. The password is randomly generated (5 words) and returned once in the response.',
   })
-  public async create(@Body() dto: CreateAdminDto): Promise<UserResponseDto> {
+  public async create(@Body() dto: CreateAdminDto): Promise<{
+    user: UserResponseDto;
+    tempPassword: string;
+  }> {
     return await this.createAdminAccount.execute(dto);
   }
 

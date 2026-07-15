@@ -17,7 +17,9 @@ export class CreateAdminAccountService {
     private readonly cryptoService: CryptoUtilsService,
   ) {}
 
-  public async execute(createAdminDto: CreateAdminDto): Promise<UserResponseDto> {
+  public async execute(
+    createAdminDto: CreateAdminDto,
+  ): Promise<{ user: UserResponseDto; tempPassword: string }> {
     const generatedPassword = this.cryptoService.generateCode(
       CreateAdminAccountService.PASSPHRASE_WORD_COUNT,
     );
@@ -30,6 +32,9 @@ export class CreateAdminAccountService {
 
     const adminUser = await this.getUser.execute({ id: createdUser.userId });
 
-    return toUserResponseDto(adminUser);
+    return {
+      user: toUserResponseDto(adminUser),
+      tempPassword: generatedPassword,
+    };
   }
 }
