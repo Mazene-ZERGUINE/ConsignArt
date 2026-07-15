@@ -1,10 +1,3 @@
-/**
- * AuthController
- *
- * Utilisé pour gérer les requete liée à l'authentification (signup, login, refresh …)
- * Route les requêtes vers les bons services, ne contien aucun logique métier
- */
-
 import { Body, Controller, Get, HttpCode, HttpStatus, Post, Req, UseGuards } from '@nestjs/common';
 import { ApiOkResponse, ApiOperation, ApiTags, ApiUnauthorizedResponse } from '@nestjs/swagger';
 import { CreateUserDto } from '../../shared/dto/create-user.dto';

@@ -13,7 +13,7 @@ export class RefreshTokensEntity {
   @PrimaryGeneratedColumn('uuid')
   id: string;
 
-  @Column('varchar', { name: 'hashed_token', length: 255, nullable: false, unique: true })
+  @Column('text', { name: 'hashed_token', nullable: false, unique: true })
   hashedToken: string;
 
   @Column('boolean', { name: 'is_revoked', default: false, nullable: false })
