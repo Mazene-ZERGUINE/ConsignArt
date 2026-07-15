@@ -13,9 +13,7 @@ export class GetArtworkByArtistService {
 
   public async execute(artistId: string): Promise<ArtWorkResponseDto[]> {
     const artWorks = (await this.artWorkRepository.find({
-      where: { owner: { id: artistId } },
-      // Relations exigées par LoadedArtWork : sans elles, le DTO renvoyait
-      // `undefined` sur tous les champs issus d'une relation.
+      where: { owner: { user: { userId: artistId } } },
       relations: { owner: true, gallery: true, expositions: { gallery: true } },
     })) as LoadedArtWork[];
 

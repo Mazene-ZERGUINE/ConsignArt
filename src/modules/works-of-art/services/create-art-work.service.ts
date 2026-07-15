@@ -23,6 +23,7 @@ export class CreateArtWorkService {
       ...dto,
       owner,
       gallery,
+      submitDate: new Date(),
     });
 
     await this.artWorkRepository.save(artWorkEntity);
