@@ -5,9 +5,9 @@ import { GalleryEntity } from '../entities/gallery.entity';
 
 @Injectable()
 export class CreateGalleryService {
-  async execute(manager: EntityManager, userEntity: UserEntity): Promise<void> {
+  async execute(manager: EntityManager, userEntity: UserEntity, name: string): Promise<void> {
     const repository = manager.getRepository(GalleryEntity);
-    const entity = repository.create({ user: userEntity });
+    const entity = repository.create({ user: userEntity, name });
     await repository.save(entity);
   }
 }

@@ -5,6 +5,7 @@ import { RefreshTokensEntity } from '../entities/refresh-tokens.entity';
 import { Repository } from 'typeorm';
 import { JwtSignService } from './jwt-signe.service';
 import { GetUserService } from '../../users/services/get-user.service';
+import { toUserResponseDto } from '../../users/mappers/user.mapper';
 
 @Injectable()
 export class RefreshTokenService {
@@ -24,7 +25,7 @@ export class RefreshTokenService {
 
     const newTokens = await this.jwtSign.execute(user);
     return {
-      user: user.toUserResponseDto(),
+      user: toUserResponseDto(user),
       token: newTokens,
     };
   }

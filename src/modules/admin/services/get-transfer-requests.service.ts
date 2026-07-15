@@ -3,6 +3,10 @@ import { TransferRequestsResponseDto } from '../../../shared/dto/transfer-reques
 import { TransferRequestStatus } from '../../../shared/enums/transfer-request.status.enum';
 import { InjectRepository } from '@nestjs/typeorm';
 import { TransferRequestEntity } from '../../../shared/entities/transfer-request.entity';
+import {
+  TransferRequestWithRelations,
+  toTransferRequestDto,
+} from '../../../shared/mappers/transfer-request.mapper';
 import { Repository } from 'typeorm';
 
 @Injectable()
@@ -13,14 +17,14 @@ export class GetTransferRequestsService {
   ) {}
 
   public async execute(status?: TransferRequestStatus): Promise<TransferRequestsResponseDto[]> {
-    const transferRequests = await this.transferRequestRepository.find({
+    const transferRequests = (await this.transferRequestRepository.find({
       where: status ? { status } : {},
       relations: {
         fromGallery: { user: true },
         toGallery: { user: true },
         artistToTransfer: { user: true },
       },
-    });
-    return transferRequests.map((transferRequest) => transferRequest.toResponseDto());
+    })) as TransferRequestWithRelations[];
+    return transferRequests.map(toTransferRequestDto);
   }
 }

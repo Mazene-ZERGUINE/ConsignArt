@@ -2,6 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { UserResponseDto } from '../../../shared/dto/base-user-response.dto';
 
 import { GetUserService } from '../../users/services/get-user.service';
+import { toUserResponseDto } from '../../users/mappers/user.mapper';
 
 @Injectable()
 export class GetAuthenticatedUserService {
@@ -9,6 +10,6 @@ export class GetAuthenticatedUserService {
 
   public async execute(userId: string): Promise<UserResponseDto> {
     const userEntity = await this.getUser.execute({ id: userId });
-    return userEntity.toUserResponseDto();
+    return toUserResponseDto(userEntity);
   }
 }

@@ -12,9 +12,6 @@ import { GalleryEntity } from '../../gallery/entities/gallery.entity';
 import { CollectorEntity } from '../../collector/collector.entity';
 import { AdminEntity } from '../../admin/entities/admin.entity';
 import { ArtistEntity } from '../../artists/entities/artist.entity';
-import { UserResponseDto } from '../../../shared/dto/base-user-response.dto';
-import { InvalidUserRoleException } from '../../auth/exceptions/invalid-user-role.exception';
-import { RelationNotLoadedException } from '../../../core/exceptions/relation-not-loaded.exception';
 
 @Entity('users_entity')
 export class UserEntity {
@@ -31,38 +28,14 @@ export class UserEntity {
   userRole: UserRole;
 
   @OneToOne(() => GalleryEntity, (entity) => entity.user)
-  gallery: GalleryEntity;
+  gallery?: GalleryEntity;
 
   @OneToOne(() => CollectorEntity, (entity) => entity.user)
-  collector: CollectorEntity;
+  collector?: CollectorEntity;
 
   @OneToOne(() => AdminEntity, (entity) => entity.user)
-  admin: AdminEntity;
+  admin?: AdminEntity;
 
   @OneToOne(() => ArtistEntity, (entity) => entity.user)
-  artist: ArtistEntity;
-
-  public toUserResponseDto(): UserResponseDto {
-    switch (this.userRole) {
-      case UserRoles.ADMIN:
-        if (!this.admin) throw new RelationNotLoadedException('admin');
-        return this.admin.toAdminDto();
-
-      case UserRoles.ARTISTE:
-        if (!this.artist) throw new RelationNotLoadedException('artist');
-        return this.artist.toArtistDto();
-
-      case UserRoles.GALLERY:
-        if (!this.gallery) throw new RelationNotLoadedException('gallery');
-        return this.gallery.toGalleryDto();
-
-      case UserRoles.COLLECTOR:
-        if (!this.collector) throw new RelationNotLoadedException('collector');
-        return this.collector.toCollectorDto();
-
-      default: {
-        throw new InvalidUserRoleException();
-      }
-    }
-  }
+  artist?: ArtistEntity;
 }

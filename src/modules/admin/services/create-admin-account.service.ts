@@ -2,8 +2,8 @@ import { Injectable } from '@nestjs/common';
 import { CreateUsersService } from '../../../shared/service/create-users.service';
 import { CryptoUtilsService } from '../../../shared/service/crypto-utils.service';
 import { GetUserService } from '../../users/services/get-user.service';
+import { toUserResponseDto } from '../../users/mappers/user.mapper';
 import { UserRoles } from '../../../shared/enums/user-roles.enum';
-import { RelationNotLoadedException } from '../../../core/exceptions/relation-not-loaded.exception';
 import { CreateAdminDto } from '../dto/create-admin.dto';
 import { UserResponseDto } from '../../../shared/dto/base-user-response.dto';
 
@@ -18,7 +18,7 @@ export class CreateAdminAccountService {
   ) {}
 
   public async execute(createAdminDto: CreateAdminDto): Promise<UserResponseDto> {
-    const generatedPassword = this.cryptoService.generatePassphrase(
+    const generatedPassword = this.cryptoService.generateCode(
       CreateAdminAccountService.PASSPHRASE_WORD_COUNT,
     );
 
@@ -29,8 +29,7 @@ export class CreateAdminAccountService {
     });
 
     const adminUser = await this.getUser.execute({ id: createdUser.userId });
-    if (!adminUser.admin) throw new RelationNotLoadedException('admin');
 
-    return adminUser.toUserResponseDto();
+    return toUserResponseDto(adminUser);
   }
 }

@@ -7,6 +7,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { DataSource, Repository } from 'typeorm';
 import { TransferRequestEntity } from '../../../shared/entities/transfer-request.entity';
 import { ArtistEntity } from '../../artists/entities/artist.entity';
+import { RelationNotLoadedException } from '../../../core/exceptions/relation-not-loaded.exception';
 
 @Injectable()
 export class AcceptOrRefuseTransferRequest {
@@ -34,6 +35,9 @@ export class AcceptOrRefuseTransferRequest {
     await this.dataSource.transaction(async (manager) => {
       if (actionType === TransferRequestActionType.APPROVE) {
         const artist = transferRequest.artistToTransfer;
+        if (!artist) throw new RelationNotLoadedException('artistToTransfer');
+        if (!transferRequest.toGallery) throw new RelationNotLoadedException('toGallery');
+
         artist.gallery = transferRequest.toGallery;
         artist.joinedGalleryAt = new Date();
         await manager.save(ArtistEntity, artist);

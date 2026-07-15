@@ -1,6 +1,14 @@
-import { IsEmail, IsEnum, IsNotEmpty, IsString, Matches, MinLength } from 'class-validator';
+import {
+  IsEmail,
+  IsEnum,
+  IsNotEmpty,
+  IsString,
+  Matches,
+  MinLength,
+  ValidateIf,
+} from 'class-validator';
 import { UserRoles, type UserRole } from '../enums/user-roles.enum';
-import { ApiProperty } from '@nestjs/swagger';
+import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
 
 export class CreateUserDto {
   @ApiProperty({
@@ -30,4 +38,12 @@ export class CreateUserDto {
   @IsEnum(UserRoles)
   @IsNotEmpty()
   userRole: UserRole;
+
+  @ApiPropertyOptional({
+    description: "Gallery display name (required when userRole is 'gallery', ignored otherwise)",
+  })
+  @ValidateIf((dto: CreateUserDto) => dto.userRole === UserRoles.GALLERY)
+  @IsString()
+  @IsNotEmpty()
+  galleryName?: string;
 }

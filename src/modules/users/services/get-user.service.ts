@@ -4,6 +4,7 @@ import { UserEntity } from '../entities/user.entity';
 import { FindOptionsRelations, Repository } from 'typeorm';
 import { InvalidCredentialsException } from '../../auth/exceptions/invalid-credentials.exception';
 import { UserRole, UserRoles } from '../../../shared/enums/user-roles.enum';
+import { UserProfiles } from '../mappers/user.mapper';
 
 @Injectable()
 export class GetUserService {
@@ -11,7 +12,7 @@ export class GetUserService {
     @InjectRepository(UserEntity) private readonly userRepository: Repository<UserEntity>,
   ) {}
 
-  async execute(searchOptions: { email?: string; id?: string }): Promise<UserEntity> {
+  async execute(searchOptions: { email?: string; id?: string }): Promise<UserProfiles> {
     const { email, id } = searchOptions;
 
     const where = email ? { email } : id ? { userId: id } : null;
@@ -34,7 +35,10 @@ export class GetUserService {
       throw new InvalidCredentialsException();
     }
 
-    return user;
+    // Seule assertion UserProfiles du projet : TypeORM ne peut pas exprimer dans son type de
+    // retour les relations demandées. Elle est valable tant que relationsForRole() ci-dessous
+    // charge, pour chaque rôle, les relations exigées par UserProfiles — les deux se modifient ensemble.
+    return user as UserProfiles;
   }
 
   private relationsForRole(role: UserRole): FindOptionsRelations<UserEntity> {

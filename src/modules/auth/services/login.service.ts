@@ -1,12 +1,12 @@
 import { Injectable } from '@nestjs/common';
 import { AuthTokenDto, JwtToken } from '../dto/auth-token.dto';
-import { UserEntity } from '../../users/entities/user.entity';
 import { LoginDto } from '../dto/login.dto';
 import { InvalidCredentialsException } from '../exceptions/invalid-credentials.exception';
 import { CryptoUtilsService } from '../../../shared/service/crypto-utils.service';
 import { UserRoles } from '../../../shared/enums/user-roles.enum';
 import { NonValidatedGalleryException } from '../exceptions/non-validated-gallery.exception';
 import { GetUserService } from '../../users/services/get-user.service';
+import { UserProfiles, toUserResponseDto } from '../../users/mappers/user.mapper';
 import { JwtSignService } from './jwt-signe.service';
 
 @Injectable()
@@ -26,7 +26,7 @@ export class LoginService {
     const jwtTokens: JwtToken = await this.jwtSigne.execute(userEntity);
 
     return {
-      user: userEntity.toUserResponseDto(),
+      user: toUserResponseDto(userEntity),
       token: jwtTokens,
     };
   }
@@ -36,7 +36,7 @@ export class LoginService {
     if (!isValidPassword) throw new InvalidCredentialsException();
   }
 
-  private isActivatedAccount(userEntity: UserEntity): void {
+  private isActivatedAccount(userEntity: UserProfiles): void {
     if (userEntity.userRole === UserRoles.GALLERY && !userEntity.gallery.isValidated)
       throw new NonValidatedGalleryException();
   }
