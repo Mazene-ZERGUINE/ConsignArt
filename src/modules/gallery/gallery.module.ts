@@ -7,10 +7,18 @@ import { GalleryController } from './gallery.controller';
 import { UsersModule } from '../users/users.module';
 import { SetArtistProfileService } from './services/set-artist-profile.service';
 import { ArtistEntity } from '../artists/entities/artist.entity';
+import { GetGalleryService } from './services/get-gallery.service';
+import { UpdateGalleryService } from './services/update-gallery.service';
 
 @Module({
   imports: [UsersModule, TypeOrmModule.forFeature([GalleryEntity, ArtistEntity])],
-  providers: [CreateGalleryService, AddArtistToGalleryService, SetArtistProfileService],
+  providers: [
+    CreateGalleryService,
+    AddArtistToGalleryService,
+    SetArtistProfileService,
+    GetGalleryService,
+    UpdateGalleryService,
+  ],
   exports: [CreateGalleryService],
   controllers: [GalleryController],
 })

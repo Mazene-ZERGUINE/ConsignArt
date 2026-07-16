@@ -19,6 +19,7 @@ import { GetAuthenticatedUserService } from './services/get-authenticated-user.s
 import { UsersModule } from '../users/users.module';
 import { RefreshTokenService } from './services/refresh-token.service';
 import { JwtSignService } from './services/jwt-signe.service';
+import { LogoutService } from './services/logout.service';
 
 @Module({
   imports: [
@@ -45,6 +46,7 @@ import { JwtSignService } from './services/jwt-signe.service';
     GetAuthenticatedUserService,
     RefreshTokenService,
     JwtSignService,
+    LogoutService,
   ],
   controllers: [AuthController],
 })
