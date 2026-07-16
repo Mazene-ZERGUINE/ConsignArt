@@ -2,7 +2,7 @@ export const TransferRequestStatusEnum = {
   PENDING: 'pending',
   APPROVED: 'approved',
   REJECTED: 'rejected',
-};
+} as const;
 
 export type TransferRequestStatus =
   (typeof TransferRequestStatusEnum)[keyof typeof TransferRequestStatusEnum];

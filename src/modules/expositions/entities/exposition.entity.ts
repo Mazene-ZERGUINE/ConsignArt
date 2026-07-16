@@ -45,9 +45,9 @@ export class ExpositionEntity {
 
   @ManyToOne(() => GalleryEntity, (entity) => entity.expositions, { nullable: false })
   @JoinColumn({ name: 'gallery_id' })
-  gallery: GalleryEntity;
+  gallery?: GalleryEntity;
 
   @ManyToMany(() => ArtWorkEntity, (entity) => entity.expositions)
   @JoinTable({ name: 'art_work_exposition_entity' })
-  artWorksList: ArtWorkEntity[];
+  artWorksList?: ArtWorkEntity[];
 }

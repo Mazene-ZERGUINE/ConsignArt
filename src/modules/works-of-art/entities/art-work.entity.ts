@@ -11,6 +11,7 @@ import { ArtistEntity } from '../../artists/entities/artist.entity';
 import { type ArtWorkStatus, ArtWorkStatusEnum } from '../../../shared/enums/art-work-status.enum';
 import { ExpositionEntity } from '../../expositions/entities/exposition.entity';
 import { GalleryEntity } from '../../gallery/entities/gallery.entity';
+import { numericTransformer } from '../../../shared/utils/numeric.transformer';
 
 @Entity('work_art_entity')
 export class ArtWorkEntity {
@@ -29,19 +30,35 @@ export class ArtWorkEntity {
   @Column('varchar', { name: 'technique' })
   public technique: string;
 
-  @Column('decimal', { precision: 10, scale: 2 })
-  public height: number;
+  @Column('decimal', { precision: 10, scale: 2, nullable: true, transformer: numericTransformer })
+  public height: number | null;
 
-  @Column('decimal', { name: 'width', precision: 10, scale: 2 })
-  public width: number;
+  @Column('decimal', {
+    name: 'width',
+    precision: 10,
+    scale: 2,
+    nullable: true,
+    transformer: numericTransformer,
+  })
+  public width: number | null;
 
-  @Column('decimal', { precision: 10, scale: 2, nullable: true })
-  public depth?: number;
+  @Column('decimal', { precision: 10, scale: 2, nullable: true, transformer: numericTransformer })
+  public depth: number | null;
 
-  @Column('decimal', { name: 'selling_price', precision: 12, scale: 2 })
+  @Column('decimal', {
+    name: 'selling_price',
+    precision: 12,
+    scale: 2,
+    transformer: numericTransformer,
+  })
   sellingPrice: number;
 
-  @Column('decimal', { name: 'reservation_price', precision: 12, scale: 2 })
+  @Column('decimal', {
+    name: 'reservation_price',
+    precision: 12,
+    scale: 2,
+    transformer: numericTransformer,
+  })
   reservationPrice: number;
 
   @Index()
@@ -54,13 +71,15 @@ export class ArtWorkEntity {
   @Column('date', { name: 'submit_date' })
   submitDate: Date;
 
+  // Relations optionnelles : TypeORM les laisse `undefined` tant qu'elles ne sont
+  // pas chargées. Cf. LoadedArtWork dans mappers/art-work.mapper.ts.
   @ManyToOne(() => ArtistEntity, (entity) => entity.artWorks)
-  public owner: ArtistEntity;
+  public owner?: ArtistEntity;
 
   @ManyToOne(() => GalleryEntity, (entity) => entity.artWorks, { nullable: false })
   @JoinColumn({ name: 'gallery_id' })
-  public gallery: GalleryEntity;
+  public gallery?: GalleryEntity;
 
   @ManyToMany(() => ExpositionEntity, (entity) => entity.artWorksList)
-  expositions: ExpositionEntity[];
+  expositions?: ExpositionEntity[];
 }

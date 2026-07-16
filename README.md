@@ -16,12 +16,12 @@
 
 ============= Contenu ici ====================
 
-
 ## Fonctionnalités implémentées
 
 ### Gestion des utilisateurs et authentification:
+
 - [x] Inscription (Collecteur, Artist, Admin & Gallery)
-- [x] Un utilisateur `Artist` est attaché à qu'une seul `Galerie` à la fois 
+- [x] Un utilisateur `Artist` est attaché à qu'une seul `Galerie` à la fois
 - [x] Les mots de passe sont hachés avec bcrypt
 - [x] un compte `Galerie` doit être validé par un administrateur avant son activation
 - [x] Login & Authentication avec JWT (Access + Refresh Token)
@@ -30,17 +30,14 @@
 - [x] Refresh Token rotation & revocation
 
 ### Gestion des artistes:
+
 - [x] Ajout d'un artiste par un compte Galerie
 - [x] Demande de transféré d'une galerie par un artiste
-- [x] Validation de transferred par un compte admin 
-
-
-
+- [x] Validation de transferred par un compte admin
 
 ## Contraintes techniques:
 
 ============= Contenu ici ====================
-
 
 ### Modules:
 

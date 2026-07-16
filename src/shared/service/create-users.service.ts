@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { BadRequestException, Injectable } from '@nestjs/common';
 import { CreateUserDto } from '../dto/create-user.dto';
 import { UserEntity } from '../../modules/users/entities/user.entity';
 import { InvalidUserRoleException } from '../../modules/auth/exceptions/invalid-user-role.exception';
@@ -39,10 +39,15 @@ export class CreateUsersService {
         return await this.persistUser(userEntity, (manager, user) =>
           this.createCollectorService.execute(manager, user),
         );
-      case 'gallery':
+      case 'gallery': {
+        const { galleryName } = createUserDto;
+        if (!galleryName) {
+          throw new BadRequestException('galleryName is required to create a gallery account');
+        }
         return await this.persistUser(userEntity, (manager, user) =>
-          this.createGalleryService.execute(manager, user),
+          this.createGalleryService.execute(manager, user, galleryName),
         );
+      }
       case 'admin':
         return await this.persistUser(userEntity, (manager, user) =>
           this.createAdminService.execute(manager, user),

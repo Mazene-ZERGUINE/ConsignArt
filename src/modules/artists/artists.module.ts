@@ -7,13 +7,16 @@ import { ArtistController } from './artist.controller';
 import { InitiateTransferRequestService } from './services/initiate-transfer-request.service';
 import { UsersModule } from '../users/users.module';
 import { GalleryEntity } from '../gallery/entities/gallery.entity';
+import { WorksOfArtModule } from '../works-of-art/works_of_art.module';
+import { AddArtworkService } from './services/add-art-work.service';
 
 @Module({
   imports: [
     UsersModule,
+    WorksOfArtModule,
     TypeOrmModule.forFeature([ArtistEntity, TransferRequestEntity, GalleryEntity]),
   ],
-  providers: [CreateArtistService, InitiateTransferRequestService],
+  providers: [CreateArtistService, InitiateTransferRequestService, AddArtworkService],
   exports: [CreateArtistService],
   controllers: [ArtistController],
 })

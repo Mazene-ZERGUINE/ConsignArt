@@ -1,10 +1,3 @@
-/**
- * ArtistEntity
- *
- * - Compose un UserEntity
- * - Utilisé pour gérer les données / la logique spécifique aux artistes
- */
-
 import {
   Column,
   Entity,
@@ -16,9 +9,6 @@ import {
 } from 'typeorm';
 import { UserEntity } from '../../users/entities/user.entity';
 import { GalleryEntity } from '../../gallery/entities/gallery.entity';
-import { ArtistUserResponseDto } from '../../../shared/dto/base-user-response.dto';
-import { UserRoles } from '../../../shared/enums/user-roles.enum';
-import { toBase } from '../../../shared/utils/users-dto.mappers';
 import {
   type ActivityStatus,
   ActivityStatusEnum,
@@ -57,35 +47,15 @@ export class ArtistEntity {
   public joinedGalleryAt: Date;
 
   @ManyToOne(() => GalleryEntity, (entity) => entity.artists)
-  public gallery: GalleryEntity;
+  public gallery?: GalleryEntity | null;
 
   @OneToOne(() => UserEntity, (entity) => entity.artist)
   @JoinColumn({ name: 'user_id' })
-  public user: UserEntity;
+  public user?: UserEntity;
 
   @OneToMany(() => TransferRequestEntity, (entity) => entity.artistToTransfer)
   transferRequests: TransferRequestEntity[];
 
   @OneToMany(() => ArtWorkEntity, (entity) => entity.owner)
   artWorks: ArtWorkEntity[];
-
-  public toArtistDto(): ArtistUserResponseDto {
-    return {
-      firstName: this.firstName,
-      lastName: this.lastName,
-      biography: this.bio,
-      nationality: this.nationality,
-      gallery: this.gallery
-        ? {
-            entityId: this.gallery.id,
-            galleryVerified: this.gallery.isValidated,
-            userId: this.gallery.user.userId,
-            email: this.gallery.user.email,
-          }
-        : null,
-      joinedGalleryAt: this.joinedGalleryAt,
-      portfolioUrl: this.portfolioUrl,
-      ...toBase(this.user, this.id, UserRoles.ARTISTE),
-    };
-  }
 }

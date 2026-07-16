@@ -10,8 +10,8 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { TransferRequestEntity } from '../../../shared/entities/transfer-request.entity';
 import { Repository } from 'typeorm';
 import { UserRoles } from '../../../shared/enums/user-roles.enum';
-import { UserEntity } from '../../users/entities/user.entity';
-import { ArtistEntity } from '../entities/artist.entity';
+import { ArtistWithRelations } from '../mappers/artist.mapper';
+import { GalleryWithRelations } from '../../gallery/mappers/gallery.mapper';
 import { TransferRequestStatusEnum } from '../../../shared/enums/transfer-request.status.enum';
 
 @Injectable()
@@ -28,35 +28,42 @@ export class InitiateTransferRequestService {
     transferRequestDto: CreateTransferRequestDto,
   ): Promise<void> {
     const artistUser = await this.getUser.execute({ id: initiatorUserId });
-    const toGalleryUser = await this.getUser.execute({ id: transferRequestDto.newGalleryId });
+    if (artistUser.userRole !== UserRoles.ARTISTE) {
+      throw new NotFoundException('Initiating artist not found');
+    }
 
-    await this.validateTransfer(toGalleryUser, artistUser.artist);
+    const toGalleryUser = await this.getUser.execute({ id: transferRequestDto.newGalleryId });
+    if (toGalleryUser.userRole !== UserRoles.GALLERY) {
+      throw new NotFoundException('Transfer target gallery not found');
+    }
+
+    const artist = artistUser.artist;
+    await this.validateTransfer(toGalleryUser.gallery, artist);
 
     const transferRequestEntity = this.transferRequestRepository.create({
-      fromGallery: artistUser.artist.gallery ?? null,
+      fromGallery: artist.gallery ?? null,
       toGallery: toGalleryUser.gallery,
-      initiatedByArtist: artistUser.artist,
+      initiatedByArtist: artist,
       transferReason: transferRequestDto.reason,
-      artistToTransfer: artistUser.artist,
+      artistToTransfer: artist,
     });
 
     await this.transferRequestRepository.save(transferRequestEntity);
   }
 
-  private async validateTransfer(toGallery: UserEntity, artistUser: ArtistEntity) {
-    if (!toGallery || toGallery.userRole !== UserRoles.GALLERY) {
-      throw new NotFoundException('Transfer target gallery not found');
-    }
-
-    if (!toGallery.gallery.isValidated) {
+  private async validateTransfer(
+    toGallery: GalleryWithRelations,
+    artist: ArtistWithRelations,
+  ): Promise<void> {
+    if (!toGallery.isValidated) {
       throw new BadRequestException("Can't transfer to gallery that isn't validated by admin yet");
     }
 
-    if (toGallery.gallery.id === artistUser.gallery.id) {
+    if (toGallery.id === artist.gallery?.id) {
       throw new ConflictException('Cannot transfer to the same gallery');
     }
 
-    await this.alreadyHaveTransferRequest(artistUser.user.userId);
+    await this.alreadyHaveTransferRequest(artist.user.userId);
   }
 
   private async alreadyHaveTransferRequest(artistId: string): Promise<void> {

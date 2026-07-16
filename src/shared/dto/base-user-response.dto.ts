@@ -1,4 +1,7 @@
 import { type UserRole, UserRoles } from '../enums/user-roles.enum';
+import type { ArtistUserResponseDto } from '../../modules/artists/dto/artist-user-response.dto';
+
+export type { ArtistUserResponseDto };
 
 export type UserResponseDto =
   | AdminUserResponseDto
@@ -15,16 +18,6 @@ export type BaseUserResponseDto<R extends UserRole = UserRole> = {
 
 export type AdminUserResponseDto = BaseUserResponseDto<typeof UserRoles.ADMIN> & {
   // todo: add other admin properties here
-};
-
-export type ArtistUserResponseDto = BaseUserResponseDto<typeof UserRoles.ARTISTE> & {
-  firstName: string | null;
-  lastName: string | null;
-  nationality: string | null;
-  biography: string | null;
-  portfolioUrl: string | null;
-  gallery: Pick<GalleryUserResponseDto, 'userId' | 'entityId' | 'galleryVerified' | 'email'> | null;
-  joinedGalleryAt: Date | null;
 };
 
 export type GalleryUserResponseDto = BaseUserResponseDto<typeof UserRoles.GALLERY> & {

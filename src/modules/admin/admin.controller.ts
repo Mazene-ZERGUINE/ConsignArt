@@ -5,6 +5,7 @@ import {
   HttpCode,
   HttpStatus,
   Param,
+  ParseEnumPipe,
   Patch,
   Post,
   Query,
@@ -19,6 +20,7 @@ import { AdminRoleGuard } from '../../core/guards/admin-role.guard';
 import {
   TransferRequestActionType,
   type TransferRequestStatus,
+  TransferRequestStatusEnum,
 } from '../../shared/enums/transfer-request.status.enum';
 import { TransferRequestsResponseDto } from '../../shared/dto/transfer-requests-response.dto';
 import { GetTransferRequestsService } from './services/get-transfer-requests.service';
@@ -44,7 +46,10 @@ export class AdminController {
     description:
       'Endpoint reserved to admins to create a new admin account. The password is randomly generated (5 words) and returned once in the response.',
   })
-  public async create(@Body() dto: CreateAdminDto): Promise<UserResponseDto> {
+  public async create(@Body() dto: CreateAdminDto): Promise<{
+    user: UserResponseDto;
+    tempPassword: string;
+  }> {
     return await this.createAdminAccount.execute(dto);
   }
 
@@ -68,7 +73,8 @@ export class AdminController {
     description: 'Endpoint used for admins to view all transfer requests',
   })
   public async fetchTransferRequests(
-    @Query('status') transferStatus?: TransferRequestStatus,
+    @Query('status', new ParseEnumPipe(TransferRequestStatusEnum))
+    transferStatus: TransferRequestStatus,
   ): Promise<TransferRequestsResponseDto[]> {
     return await this.getTransferRequests.execute(transferStatus);
   }
@@ -81,7 +87,8 @@ export class AdminController {
   })
   public async handleTransferRequest(
     @Param('id') transferRequestId: string,
-    @Query('actionType') actionType: TransferRequestActionType,
+    @Query('actionType', new ParseEnumPipe(TransferRequestActionType))
+    actionType: TransferRequestActionType,
   ): Promise<void> {
     await this.acceptOrRefuseTransferRequest.execute(transferRequestId, actionType);
   }

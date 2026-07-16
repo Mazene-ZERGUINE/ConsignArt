@@ -2,16 +2,14 @@ import { Injectable } from '@nestjs/common';
 import * as bcrypt from 'bcrypt';
 import { randomInt } from 'crypto';
 import { ConfigService } from '@nestjs/config';
-import { PASSPHRASE_WORDS } from '../constants/passphrase-words';
+import { CODE_ALPHABET, DEFAULT_SALT_ROUNDS } from '../constants/crypto.constants';
 
 @Injectable()
 export class CryptoUtilsService {
-  private readonly DEFAULT_SALT_ROUNDS = 10;
-
   constructor(private configService: ConfigService) {}
 
   public async hashPasswordWithBcrypt(plainText: string): Promise<string> {
-    const saltRounds = this.configService.get<number>('SALT_ROUNDS', this.DEFAULT_SALT_ROUNDS);
+    const saltRounds = this.configService.get<number>('SALT_ROUNDS', DEFAULT_SALT_ROUNDS);
     return await bcrypt.hash(plainText, saltRounds);
   }
 
@@ -19,10 +17,15 @@ export class CryptoUtilsService {
     return await bcrypt.compare(plainText, hashedPassword);
   }
 
-  public generatePassphrase(wordCount = 5): string {
-    return Array.from({ length: wordCount }, () => {
-      const word = PASSPHRASE_WORDS[randomInt(PASSPHRASE_WORDS.length)];
-      return word.charAt(0).toUpperCase() + word.slice(1);
-    }).join('-');
+  public generateCode(length = 20, groupSize = 5): string {
+    const chars = Array.from({ length }, () => CODE_ALPHABET[randomInt(CODE_ALPHABET.length)]);
+
+    if (groupSize <= 0) return chars.join('');
+
+    const groups: string[] = [];
+    for (let i = 0; i < chars.length; i += groupSize) {
+      groups.push(chars.slice(i, i + groupSize).join(''));
+    }
+    return groups.join('-');
   }
 }
