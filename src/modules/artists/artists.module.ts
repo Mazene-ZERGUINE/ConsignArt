@@ -9,6 +9,9 @@ import { UsersModule } from '../users/users.module';
 import { GalleryEntity } from '../gallery/entities/gallery.entity';
 import { WorksOfArtModule } from '../works-of-art/works_of_art.module';
 import { AddArtworkService } from './services/add-art-work.service';
+import { GetArtistService } from './services/get-artist.service';
+import { UpdateArtistService } from './services/update-artist.service';
+import { ChangeArtistStatusService } from './services/change-artist-status.service';
 
 @Module({
   imports: [
@@ -16,7 +19,14 @@ import { AddArtworkService } from './services/add-art-work.service';
     WorksOfArtModule,
     TypeOrmModule.forFeature([ArtistEntity, TransferRequestEntity, GalleryEntity]),
   ],
-  providers: [CreateArtistService, InitiateTransferRequestService, AddArtworkService],
+  providers: [
+    CreateArtistService,
+    InitiateTransferRequestService,
+    AddArtworkService,
+    GetArtistService,
+    UpdateArtistService,
+    ChangeArtistStatusService,
+  ],
   exports: [CreateArtistService],
   controllers: [ArtistController],
 })

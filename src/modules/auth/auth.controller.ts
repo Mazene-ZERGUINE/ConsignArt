@@ -14,6 +14,7 @@ import { JwtRefreshGuard } from '../../core/guards/jwt-refresh.guard';
 import { type Request } from 'express';
 import { RefreshTokenService } from './services/refresh-token.service';
 import { JwtPayload } from '../../core/types/jwt-payload.types';
+import { LogoutService } from './services/logout.service';
 
 @ApiTags('auth')
 @Controller('auth')
@@ -23,6 +24,7 @@ export class AuthController {
     private readonly logIn: LoginService,
     private readonly getAuthenticatedUser: GetAuthenticatedUserService,
     private readonly refresh: RefreshTokenService,
+    private readonly logOut: LogoutService,
   ) {}
 
   @Post('signup')
@@ -66,6 +68,17 @@ export class AuthController {
   })
   public async me(@AuthUser() user: AuthenticatedUser): Promise<UserResponseDto> {
     return this.getAuthenticatedUser.execute(user.userId);
+  }
+
+  @UseGuards(JwtAccessGuard)
+  @Post('logout')
+  @HttpCode(HttpStatus.NO_CONTENT)
+  @ApiOperation({
+    description:
+      'Endpoint used to log the authenticated user out by revoking all their active refresh tokens',
+  })
+  public async logout(@AuthUser() user: AuthenticatedUser): Promise<void> {
+    await this.logOut.execute(user.userId);
   }
 
   @UseGuards(JwtRefreshGuard)

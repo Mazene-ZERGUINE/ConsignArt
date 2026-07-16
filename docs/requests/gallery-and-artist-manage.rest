@@ -1,0 +1,64 @@
+### Login as admin
+POST http://localhost:3000/api/v1/auth/login
+Content-Type: application/json
+
+{ "email": "root_admin@t.co", "password": "Password1234!", "userRole": "admin" }
+
+> {% client.global.set("adminAccessToken", response.body.data.token.accessToken); %}
+
+### List galleries still pending validation (admin)
+GET http://localhost:3000/api/v1/gallery?pending=true
+Authorization: Bearer {{adminAccessToken}}
+
+### List all galleries (admin)
+GET http://localhost:3000/api/v1/gallery
+Authorization: Bearer {{adminAccessToken}}
+
+### Login as gallery
+POST http://localhost:3000/api/v1/auth/login
+Content-Type: application/json
+
+{ "email": "gallery@t.co", "password": "Password1234!", "userRole": "gallery" }
+
+> {%
+  client.global.set("galleryAccessToken", response.body.data.token.accessToken);
+  client.global.set("galleryUserId", response.body.data.user.userId);
+%}
+
+### Read my own gallery (admin or owning gallery)
+GET http://localhost:3000/api/v1/gallery/{{galleryUserId}}
+Authorization: Bearer {{galleryAccessToken}}
+
+### Rename my gallery
+PATCH http://localhost:3000/api/v1/gallery/{{galleryUserId}}
+Authorization: Bearer {{galleryAccessToken}}
+Content-Type: application/json
+
+{ "name": "New Gallery Name" }
+
+### List my gallery's artists (gallery) / all artists (admin)
+GET http://localhost:3000/api/v1/artists
+Authorization: Bearer {{galleryAccessToken}}
+
+### Read a single artist by user id
+GET http://localhost:3000/api/v1/artists/00000000-0000-0000-0000-000000000000
+Authorization: Bearer {{galleryAccessToken}}
+
+### Update an artist profile (admin, owning gallery, or the artist)
+PATCH http://localhost:3000/api/v1/artists/00000000-0000-0000-0000-000000000000
+Authorization: Bearer {{galleryAccessToken}}
+Content-Type: application/json
+
+{ "bio": "Updated biography", "nationality": "FR" }
+
+### Activate / deactivate an artist (admin or owning gallery)
+PATCH http://localhost:3000/api/v1/artists/00000000-0000-0000-0000-000000000000/status
+Authorization: Bearer {{galleryAccessToken}}
+Content-Type: application/json
+
+{ "status": "inactive" }
+
+### Read my own artist profile (artist role)
+# Login as the artist first, then:
+GET http://localhost:3000/api/v1/artists/me
+Authorization: Bearer {{artistAccessToken}}

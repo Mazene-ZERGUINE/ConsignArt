@@ -1,0 +1,43 @@
+### Login as admin
+POST http://localhost:3000/api/v1/auth/login
+Content-Type: application/json
+
+{
+  "email": "root_admin@t.co",
+  "password": "Password1234!",
+  "userRole": "admin"
+}
+
+> {%
+  client.global.set("adminAccessToken", response.body.data.token.accessToken);
+%}
+
+### List every user (admin only)
+GET http://localhost:3000/api/v1/users
+Authorization: Bearer {{adminAccessToken}}
+
+### List users filtered by role
+GET http://localhost:3000/api/v1/users?role=gallery
+Authorization: Bearer {{adminAccessToken}}
+
+### Read a single user by user id
+GET http://localhost:3000/api/v1/users/00000000-0000-0000-0000-000000000000
+Authorization: Bearer {{adminAccessToken}}
+
+### Delete a user (blocked while the user still owns domain data)
+DELETE http://localhost:3000/api/v1/users/00000000-0000-0000-0000-000000000000
+Authorization: Bearer {{adminAccessToken}}
+
+### Change my own password (any authenticated user)
+PATCH http://localhost:3000/api/v1/users/me/password
+Authorization: Bearer {{adminAccessToken}}
+Content-Type: application/json
+
+{
+  "currentPassword": "Password1234!",
+  "newPassword": "NewPassword1234!"
+}
+
+### Logout (revoke my active refresh tokens)
+POST http://localhost:3000/api/v1/auth/logout
+Authorization: Bearer {{adminAccessToken}}
