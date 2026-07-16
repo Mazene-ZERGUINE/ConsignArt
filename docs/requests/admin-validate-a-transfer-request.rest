@@ -3,7 +3,7 @@ POST http://localhost:3000/api/v1/auth/login
 Content-Type: application/json
 
 {
-  "email": "admin@test.com",
+  "email": "na7001@t.co",
   "password": "Password1234!",
   "userRole": "admin"
 }
@@ -14,12 +14,12 @@ Content-Type: application/json
 
 
 ### 2. List only PENDING transfer requests (expected 200 OK with the liste of only the requests with pendding status)
-GET http://localhost:3000/api/v1/admin/transfer-requests?status=pending
+GET http://localhost:3000/api/v1/admin/transfer-requests?status=faah
 Authorization: Bearer {{adminAccessToken}}
 
 
 ### 3. APPROVE a pending transfer request (204 No Content)
-PATCH http://localhost:3000/api/v1/admin/transfer-requests/{{transferRequestId}}/action?actionType=approve
+PATCH http://localhost:3000/api/v1/admin/transfer-requests/357cbe7e-42ec-45db-a1a5-3595b84b6b38/action?actionType=faah
 Authorization: Bearer {{adminAccessToken}}
 
 

@@ -3,9 +3,10 @@ POST http://localhost:3000/api/v1/auth/signup
 Content-Type: application/json
 
 {
-  "email": "new-gallery2@test.com",
+  "email": "new-gallery3@test.com",
   "password": "Password1234!",
-  "userRole": "gallery"
+  "userRole": "gallery",
+  "galleryName": "new test gallery"
 }
 
 
