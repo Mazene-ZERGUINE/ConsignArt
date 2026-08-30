@@ -13,6 +13,7 @@ import { RefreshTokensEntity } from '../../modules/auth/entities/refresh-tokens.
 import { TransferRequestEntity } from '../../shared/entities/transfer-request.entity';
 import { ArtWorkEntity } from '../../modules/works-of-art/entities/art-work.entity';
 import { ArtWorkTransferHistoryEntity } from '../../modules/works-of-art/entities/art-work-transfer-history.entity';
+import { WorkArtLoanEntity } from '../../modules/works-of-art/entities/work-art-load.entity';
 import { ContractEntity } from '../../modules/sell-contracts/entities/contract.entity';
 import { ReceiptEntity } from '../../modules/sell-contracts/entities/receipt.entity';
 import { InvoiceEntity } from '../../modules/sell-contracts/entities/invoice.entity';
@@ -42,6 +43,7 @@ export const createTypeOrmConfig = (configService: ConfigService): TypeOrmModule
       TransferRequestEntity,
       ArtWorkEntity,
       ArtWorkTransferHistoryEntity,
+      WorkArtLoanEntity,
       ContractEntity,
       ReceiptEntity,
       InvoiceEntity,

@@ -1,0 +1,17 @@
+
+> consign_art@0.0.1 start
+> nest start
+
+[32m[Nest] 10424  - [39m29/08/2026 17:22:28 [32m    LOG[39m [38;5;3m[NestFactory] [39m[32mStarting Nest application...[39m
+[32m[Nest] 10424  - [39m29/08/2026 17:22:28 [32m    LOG[39m [38;5;3m[InstanceLoader] [39m[32mAppModule dependencies initialized[39m[38;5;3m +30ms[39m
+[32m[Nest] 10424  - [39m29/08/2026 17:22:28 [32m    LOG[39m [38;5;3m[InstanceLoader] [39m[32mTypeOrmModule dependencies initialized[39m[38;5;3m +0ms[39m
+[32m[Nest] 10424  - [39m29/08/2026 17:22:28 [32m    LOG[39m [38;5;3m[InstanceLoader] [39m[32mCollectorModule dependencies initialized[39m[38;5;3m +0ms[39m
+[32m[Nest] 10424  - [39m29/08/2026 17:22:28 [32m    LOG[39m [38;5;3m[InstanceLoader] [39m[32mPassportModule dependencies initialized[39m[38;5;3m +0ms[39m
+[32m[Nest] 10424  - [39m29/08/2026 17:22:28 [32m    LOG[39m [38;5;3m[InstanceLoader] [39m[32mSellContractsModule dependencies initialized[39m[38;5;3m +10ms[39m
+[32m[Nest] 10424  - [39m29/08/2026 17:22:28 [32m    LOG[39m [38;5;3m[InstanceLoader] [39m[32mCommissionRulesModule dependencies initialized[39m[38;5;3m +0ms[39m
+[32m[Nest] 10424  - [39m29/08/2026 17:22:28 [32m    LOG[39m [38;5;3m[InstanceLoader] [39m[32mExpositionsModule dependencies initialized[39m[38;5;3m +0ms[39m
+[32m[Nest] 10424  - [39m29/08/2026 17:22:28 [32m    LOG[39m [38;5;3m[InstanceLoader] [39m[32mAnalyticsModule dependencies initialized[39m[38;5;3m +1ms[39m
+[32m[Nest] 10424  - [39m29/08/2026 17:22:28 [32m    LOG[39m [38;5;3m[InstanceLoader] [39m[32mConfigHostModule dependencies initialized[39m[38;5;3m +0ms[39m
+[32m[Nest] 10424  - [39m29/08/2026 17:22:28 [32m    LOG[39m [38;5;3m[InstanceLoader] [39m[32mCoreModule dependencies initialized[39m[38;5;3m +0ms[39m
+[32m[Nest] 10424  - [39m29/08/2026 17:22:28 [32m    LOG[39m [38;5;3m[InstanceLoader] [39m[32mConfigModule dependencies initialized[39m[38;5;3m +9ms[39m
+[32m[Nest] 10424  - [39m29/08/2026 17:22:28 [32m    LOG[39m [38;5;3m[InstanceLoader] [39m[32mConfigModule dependencies initialized[39m[38;5;3m +0ms[39m

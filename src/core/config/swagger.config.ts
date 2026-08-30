@@ -6,6 +6,7 @@ export const createSwaggerConfig = (app: INestApplication) => {
     .setTitle('ConsignArt API')
     .setDescription('ConsignArt REST API documentation')
     .setVersion('1.0')
+    .addBearerAuth()
     .build();
 
   const document = SwaggerModule.createDocument(app, swaggerConfig);

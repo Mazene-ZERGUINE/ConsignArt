@@ -2,6 +2,8 @@ import { Column, Entity, JoinColumn, ManyToOne, OneToOne, PrimaryGeneratedColumn
 import { CollectorEntity } from '../../collector/collector.entity';
 import { ArtWorkEntity } from '../../works-of-art/entities/art-work.entity';
 import { numericTransformer } from '../../../shared/utils/numeric.transformer';
+import { InvoiceEntity } from './invoice.entity';
+import { ReceiptEntity } from './receipt.entity';
 
 @Entity('contract_entity')
 export class ContractEntity {
@@ -42,4 +44,10 @@ export class ContractEntity {
   @ManyToOne(() => CollectorEntity, (entity) => entity.contracts)
   @JoinColumn({ name: 'buyer_id' })
   buyer: CollectorEntity;
+
+  @OneToOne(() => InvoiceEntity, (entity) => entity.contract)
+  invoice?: InvoiceEntity;
+
+  @OneToOne(() => ReceiptEntity, (entity) => entity.contract)
+  receipt?: ReceiptEntity;
 }

@@ -10,7 +10,7 @@ import {
   Post,
   UseGuards,
 } from '@nestjs/common';
-import { ApiOperation, ApiProperty, ApiTags } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiOperation, ApiProperty, ApiTags } from '@nestjs/swagger';
 import { JwtAccessGuard } from '../../core/guards/jwt-access.guard';
 import { ArtistRoleGuard } from '../../core/guards/artist-role.guard';
 import { AuthUser } from '../../shared/decorators/authenticated-user.decorator';
@@ -29,6 +29,7 @@ import { ChangeArtistStatusDto } from './dto/change-artist-status.dto';
 import { ArtistUserResponseDto } from './dto/artist-user-response.dto';
 
 @ApiTags('artists')
+@ApiBearerAuth()
 @Controller('artists')
 export class ArtistController {
   constructor(
