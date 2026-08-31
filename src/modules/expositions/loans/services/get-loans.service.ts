@@ -33,10 +33,10 @@ export class GetLoansService {
   }
 
   public async getOne(id: string): Promise<LoanResponseDto> {
-    const loan = (await this.loanRepository.findOne({
+    const loan = await this.loanRepository.findOne({
       where: { id },
       relations: LOAN_RELATIONS,
-    })) as LoadedLoan | null;
+    });
 
     if (!loan) throw new NotFoundException('Loan not found');
 

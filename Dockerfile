@@ -14,4 +14,4 @@ RUN npm ci --omit=dev && npm cache clean --force
 COPY --from=builder /app/dist ./dist
 
 EXPOSE 3000
-CMD ["sh", "-c", "npm run migration:run:prod && node dist/main"]
+CMD ["sh", "-c", "npm run migration:run:prod && (node dist/core/db/seeds/seed.js || true) && node dist/main"]

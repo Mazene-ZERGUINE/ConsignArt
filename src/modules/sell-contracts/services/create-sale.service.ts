@@ -28,10 +28,7 @@ export class CreateSaleService {
     private readonly calculateCommission: CalculateCommissionService,
   ) {}
 
-  public async execute(
-    requester: AuthenticatedUser,
-    dto: CreateSaleDto,
-  ): Promise<SaleResponseDto> {
+  public async execute(requester: AuthenticatedUser, dto: CreateSaleDto): Promise<SaleResponseDto> {
     return this.dataSource.transaction(async (manager) => {
       const artWork = (await manager.findOne(ArtWorkEntity, {
         where: { id: dto.artWorkId },

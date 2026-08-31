@@ -12,7 +12,7 @@ import {
   Query,
   UseGuards,
 } from '@nestjs/common';
-import { ApiOperation, ApiTags } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiOperation, ApiTags } from '@nestjs/swagger';
 import { AuthUser } from '../../shared/decorators/authenticated-user.decorator';
 import { type AuthenticatedUser } from '../../core/types/authenticated-user.types';
 import { CreateArtistDto } from './dto/create-artist.dto';
@@ -26,6 +26,7 @@ import { UpdateGalleryDto } from './dto/update-gallery.dto';
 import { GalleryUserResponseDto } from '../../shared/dto/base-user-response.dto';
 
 @ApiTags('Gallery')
+@ApiBearerAuth()
 @Controller('gallery')
 export class GalleryController {
   constructor(

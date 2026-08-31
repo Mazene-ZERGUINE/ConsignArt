@@ -1,0 +1,14 @@
+process.env.NODE_ENV = 'development';
+process.env.SERVER_PORT = '3000';
+process.env.SERVER_HOST = '0.0.0.0';
+process.env.SERVER_DEBUG_MODE = 'false';
+process.env.DB_DRIVER = 'sqlite';
+process.env.DB_HOST = 'localhost';
+process.env.DB_PORT = '5432';
+process.env.DB_USERNAME = 'test';
+process.env.DB_PASSWORD = 'test';
+process.env.DB_DATABASE = ':memory:';
+process.env.DB_SYNCHRONIZE = 'true';
+process.env.DB_DEBUG_MODE = 'false';
+process.env.JWT_SECRET = 'integration-test-jwt-secret';
+process.env.JWT_REFRESH_SECRET = 'integration-test-jwt-refresh-secret';

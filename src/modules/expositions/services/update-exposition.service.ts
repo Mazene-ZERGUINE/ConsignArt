@@ -54,6 +54,8 @@ export class UpdateExpositionService {
     ) {
       return;
     }
-    throw new ForbiddenException('Only the organizing gallery or an admin can update this exposition');
+    throw new ForbiddenException(
+      'Only the organizing gallery or an admin can update this exposition',
+    );
   }
 }

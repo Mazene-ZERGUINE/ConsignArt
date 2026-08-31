@@ -12,7 +12,7 @@ import {
   Query,
   UseGuards,
 } from '@nestjs/common';
-import { ApiOperation, ApiTags } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiOperation, ApiTags } from '@nestjs/swagger';
 import { JwtAccessGuard } from '../../core/guards/jwt-access.guard';
 import { AuthUser } from '../../shared/decorators/authenticated-user.decorator';
 import { type AuthenticatedUser } from '../../core/types/authenticated-user.types';
@@ -26,6 +26,7 @@ import { DeleteArtWorkService } from './services/delete-art-work.service';
 import { ChangeArtWorkStatusService } from './services/change-art-work-status.service';
 
 @ApiTags('artworks')
+@ApiBearerAuth()
 @Controller('artworks')
 export class ArtworksController {
   constructor(

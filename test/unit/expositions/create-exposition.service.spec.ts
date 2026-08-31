@@ -1,4 +1,4 @@
-import { BadRequestException, ForbiddenException, NotFoundException } from '@nestjs/common';
+import { ForbiddenException, NotFoundException } from '@nestjs/common';
 import { CreateExpositionService } from '../../../src/modules/expositions/services/create-exposition.service';
 import { ArtWorkEntity } from '../../../src/modules/works-of-art/entities/art-work.entity';
 import { ArtWorkStatusEnum } from '../../../src/shared/enums/art-work-status.enum';
@@ -40,7 +40,9 @@ describe('CreateExpositionService', () => {
         return Promise.resolve([]);
       }),
       create: jest.fn((_entity: unknown, obj: Record<string, unknown>) => obj),
-      save: jest.fn((obj: Record<string, unknown>) => Promise.resolve({ id: 'generated-id', ...obj })),
+      save: jest.fn((obj: Record<string, unknown>) =>
+        Promise.resolve({ id: 'generated-id', ...obj }),
+      ),
       update: jest.fn(() => Promise.resolve()),
     };
   }
@@ -65,7 +67,10 @@ describe('CreateExpositionService', () => {
     const service = buildService(manager, { userRole: UserRoles.GALLERY, gallery });
 
     await expect(
-      service.execute(galleryRequester, buildDto({ startDate: '2026-02-01', endDate: '2026-01-01' })),
+      service.execute(
+        galleryRequester,
+        buildDto({ startDate: '2026-02-01', endDate: '2026-01-01' }),
+      ),
     ).rejects.toThrow('The exposition end date cannot be before its start date');
   });
 
@@ -73,9 +78,9 @@ describe('CreateExpositionService', () => {
     const manager = buildManager([]);
     const service = buildService(manager, { userRole: UserRoles.GALLERY, gallery });
 
-    await expect(
-      service.execute(galleryRequester, buildDto({ artWorkIds: [] })),
-    ).rejects.toThrow('An exposition cannot be created with zero art works');
+    await expect(service.execute(galleryRequester, buildDto({ artWorkIds: [] }))).rejects.toThrow(
+      'An exposition cannot be created with zero art works',
+    );
   });
 
   it('throws NotFoundException when an art work id cannot be found', async () => {
@@ -110,7 +115,9 @@ describe('CreateExpositionService', () => {
 
     expect(result.name).toBe('Impressionists');
     expect(result.galleryId).toBe(gallery.id);
-    expect(result.artWorks).toEqual([{ id: artWork.id, title: artWork.title, status: ArtWorkStatusEnum.ON_LOAN }]);
+    expect(result.artWorks).toEqual([
+      { id: artWork.id, title: artWork.title, status: ArtWorkStatusEnum.ON_LOAN },
+    ]);
     expect(manager.update).toHaveBeenCalledWith(ArtWorkEntity, artWork.id, {
       status: ArtWorkStatusEnum.ON_LOAN,
     });

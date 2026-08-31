@@ -50,6 +50,8 @@ export class CloseExpositionService {
     ) {
       return;
     }
-    throw new ForbiddenException('Only the organizing gallery or an admin can close this exposition');
+    throw new ForbiddenException(
+      'Only the organizing gallery or an admin can close this exposition',
+    );
   }
 }

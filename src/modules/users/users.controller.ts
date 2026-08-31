@@ -8,7 +8,7 @@ import {
   Query,
   UseGuards,
 } from '@nestjs/common';
-import { ApiOperation, ApiTags } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiOperation, ApiTags } from '@nestjs/swagger';
 import { JwtAccessGuard } from '../../core/guards/jwt-access.guard';
 import { AdminRoleGuard } from '../../core/guards/admin-role.guard';
 import { UserResponseDto } from '../../shared/dto/base-user-response.dto';
@@ -17,6 +17,7 @@ import { ListUsersService } from './services/list-users.service';
 import { GetUserProfileService } from './services/get-user-profile.service';
 
 @ApiTags('users')
+@ApiBearerAuth()
 @Controller('users')
 export class UsersController {
   constructor(

@@ -43,6 +43,8 @@ export class GetArtistStatsService {
   }
 
   private sum(contracts: ContractEntity[], selector: (contract: ContractEntity) => number): number {
-    return Math.round(contracts.reduce((total, contract) => total + selector(contract), 0) * 100) / 100;
+    return (
+      Math.round(contracts.reduce((total, contract) => total + selector(contract), 0) * 100) / 100
+    );
   }
 }

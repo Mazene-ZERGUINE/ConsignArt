@@ -49,10 +49,14 @@ export class GetGalleryStatsService {
   }
 
   private sum(contracts: ContractEntity[], selector: (contract: ContractEntity) => number): number {
-    return Math.round(contracts.reduce((total, contract) => total + selector(contract), 0) * 100) / 100;
+    return (
+      Math.round(contracts.reduce((total, contract) => total + selector(contract), 0) * 100) / 100
+    );
   }
 
-  private groupByMonth(contracts: LoadedContract[]): GalleryStatsResponseDto['artworksSoldByMonth'] {
+  private groupByMonth(
+    contracts: LoadedContract[],
+  ): GalleryStatsResponseDto['artworksSoldByMonth'] {
     const counts = new Map<string, number>();
     for (const contract of contracts) {
       const month = new Date(contract.sellingDate).toISOString().slice(0, 7);

@@ -9,7 +9,9 @@ describe('GetAdminStatsService', () => {
       ),
     };
     const artistRepository = { count: jest.fn(() => Promise.resolve(counts.activeArtists ?? 0)) };
-    const galleryRepository = { count: jest.fn(() => Promise.resolve(counts.validatedGalleries ?? 0)) };
+    const galleryRepository = {
+      count: jest.fn(() => Promise.resolve(counts.validatedGalleries ?? 0)),
+    };
     return new GetAdminStatsService(
       contractRepository as never,
       userRepository as never,

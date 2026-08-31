@@ -1,5 +1,11 @@
 import { Body, Controller, Get, HttpCode, HttpStatus, Post, Req, UseGuards } from '@nestjs/common';
-import { ApiOkResponse, ApiOperation, ApiTags, ApiUnauthorizedResponse } from '@nestjs/swagger';
+import {
+  ApiBearerAuth,
+  ApiOkResponse,
+  ApiOperation,
+  ApiTags,
+  ApiUnauthorizedResponse,
+} from '@nestjs/swagger';
 import { CreateUserDto } from '../../shared/dto/create-user.dto';
 import { SignupService } from './services/signup.service';
 import { AuthTokenDto } from './dto/auth-token.dto';
@@ -58,6 +64,7 @@ export class AuthController {
   }
 
   @UseGuards(JwtAccessGuard)
+  @ApiBearerAuth()
   @Get('me')
   @HttpCode(HttpStatus.OK)
   @ApiOperation({
@@ -71,6 +78,7 @@ export class AuthController {
   }
 
   @UseGuards(JwtAccessGuard)
+  @ApiBearerAuth()
   @Post('logout')
   @HttpCode(HttpStatus.NO_CONTENT)
   @ApiOperation({
@@ -82,6 +90,7 @@ export class AuthController {
   }
 
   @UseGuards(JwtRefreshGuard)
+  @ApiBearerAuth()
   @Post('refresh-token')
   @HttpCode(HttpStatus.OK)
   @ApiOperation({

@@ -1,21 +1,18 @@
 services:
-
   postgres:
     image: postgres:17-alpine
     container_name: consign-art-prod-db
     restart: unless-stopped
-    env_file:
-      - .env
     environment:
-      POSTGRES_USER: ${DB_USERNAME}
-      POSTGRES_PASSWORD: ${DB_PASSWORD}
-      POSTGRES_DB: ${DB_DATABASE}
+      POSTGRES_USER: ${DB_USERNAME:-consignart}
+      POSTGRES_PASSWORD: ${DB_PASSWORD:-consignart}
+      POSTGRES_DB: ${DB_DATABASE:-consignart}
     ports:
-      - '${DB_PORT}:5432'
+      - '${DB_PORT:-5432}:5432'
     volumes:
       - data:/var/lib/postgresql/data
     healthcheck:
-      test: [ 'CMD-SHELL', 'pg_isready -U ${DB_USERNAME} -d ${DB_DATABASE}' ]
+      test: ['CMD-SHELL', 'pg_isready -U ${DB_USERNAME:-consignart} -d ${DB_DATABASE:-consignart}']
       interval: 10s
       timeout: 5s
       retries: 5
@@ -27,13 +24,23 @@ services:
       dockerfile: Dockerfile
     container_name: consign-art-prod-api
     restart: unless-stopped
-    env_file:
-      - .env
     environment:
-      DB_HOST: postgres
       NODE_ENV: production
+      SERVER_PORT: ${SERVER_PORT:-3000}
+      SERVER_HOST: ${SERVER_HOST:-0.0.0.0}
+      SERVER_DEBUG_MODE: ${SERVER_DEBUG_MODE:-false}
+      DB_DRIVER: postgres
+      DB_HOST: postgres
+      DB_PORT: 5432
+      DB_USERNAME: ${DB_USERNAME:-consignart}
+      DB_PASSWORD: ${DB_PASSWORD:-consignart}
+      DB_DATABASE: ${DB_DATABASE:-consignart}
+      DB_SYNCHRONIZE: 'false'
+      DB_DEBUG_MODE: 'false'
+      JWT_SECRET: ${JWT_SECRET:-change-this-prod-jwt-secret}
+      JWT_REFRESH_SECRET: ${JWT_REFRESH_SECRET:-change-this-prod-refresh-secret}
     ports:
-      - '3000:3000'
+      - '${SERVER_PORT:-3000}:3000'
     depends_on:
       postgres:
         condition: service_healthy
