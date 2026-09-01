@@ -1,6 +1,6 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { FindOptionsWhere, Repository } from 'typeorm';
+import { FindOptionsWhere, MoreThanOrEqual, Repository } from 'typeorm';
 import { ContractEntity } from '../entities/contract.entity';
 import { SaleResponseDto } from '../dto/sale-response.dto';
 import { LoadedContract, toSaleDto } from '../mappers/sale.mapper';
@@ -21,9 +21,12 @@ export class GetSalesService {
     private readonly contractRepository: Repository<ContractEntity>,
   ) {}
 
-  public async list(requester: AuthenticatedUser): Promise<SaleResponseDto[]> {
+  public async list(requester: AuthenticatedUser, since?: Date): Promise<SaleResponseDto[]> {
     const contracts = (await this.contractRepository.find({
-      where: this.buildScope(requester),
+      where: {
+        ...this.buildScope(requester),
+        ...(since && { sellingDate: MoreThanOrEqual(since) }),
+      },
       relations: SALE_RELATIONS,
     })) as LoadedContract[];
 

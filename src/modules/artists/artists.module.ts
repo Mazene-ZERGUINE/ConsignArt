@@ -12,6 +12,7 @@ import { AddArtworkService } from './services/add-art-work.service';
 import { GetArtistService } from './services/get-artist.service';
 import { UpdateArtistService } from './services/update-artist.service';
 import { ChangeArtistStatusService } from './services/change-artist-status.service';
+import { MaxActiveArtworksPipe } from '../../core/pipes/max-active-artworks.pipe';
 
 @Module({
   imports: [
@@ -26,6 +27,7 @@ import { ChangeArtistStatusService } from './services/change-artist-status.servi
     GetArtistService,
     UpdateArtistService,
     ChangeArtistStatusService,
+    MaxActiveArtworksPipe,
   ],
   exports: [CreateArtistService],
   controllers: [ArtistController],

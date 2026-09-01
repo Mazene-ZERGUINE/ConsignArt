@@ -10,7 +10,8 @@ import {
 } from '@nestjs/common';
 import { ApiBearerAuth, ApiOperation, ApiTags } from '@nestjs/swagger';
 import { JwtAccessGuard } from '../../core/guards/jwt-access.guard';
-import { AdminRoleGuard } from '../../core/guards/admin-role.guard';
+import { RolesGuard } from '../../core/guards/roles.guard';
+import { Roles } from '../../shared/decorators/roles.decorator';
 import { UserResponseDto } from '../../shared/dto/base-user-response.dto';
 import { type UserRole, UserRoles } from '../../shared/enums/user-roles.enum';
 import { ListUsersService } from './services/list-users.service';
@@ -25,7 +26,8 @@ export class UsersController {
     private readonly getUserProfile: GetUserProfileService,
   ) {}
 
-  @UseGuards(JwtAccessGuard, AdminRoleGuard)
+  @UseGuards(JwtAccessGuard, RolesGuard)
+  @Roles(UserRoles.ADMIN)
   @Get()
   @HttpCode(HttpStatus.OK)
   @ApiOperation({
@@ -38,7 +40,8 @@ export class UsersController {
     );
   }
 
-  @UseGuards(JwtAccessGuard, AdminRoleGuard)
+  @UseGuards(JwtAccessGuard, RolesGuard)
+  @Roles(UserRoles.ADMIN)
   @Get(':id')
   @HttpCode(HttpStatus.OK)
   @ApiOperation({

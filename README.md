@@ -139,7 +139,9 @@ npm run test:cov     # with coverage
 - [x] Artist transfer between galleries, subject to admin approval
 - [x] Artwork lifecycle: `available` / `on_loan` / `sold` / `returned`, with every status change
       written to `art_work_transfer_history_entity`
-- [x] Max 50 active artworks per artist (enforced in `AddArtworkService`)
+- [x] Max 50 active artworks per artist (enforced twice: `MaxActiveArtworksPipe` at the HTTP
+      boundary, and again in `AddArtworkService` so the invariant holds for non-HTTP callers too,
+      e.g. the seed script)
 - [x] Sale blocked below the reserve price and while `on_loan`
 - [x] Commission tiers (40% ≤ 5000€, 35% ≤ 20000€, 30% above), sale + invoice + receipt +
       history all written inside one DB transaction
@@ -156,8 +158,18 @@ npm run test:cov     # with coverage
 - [x] 11 feature modules, each owning its controllers/services/entities/DTOs
 - [x] Versioned REST routes under `/api/v1`
 - [x] Global `ValidationPipe` (class-validator + class-transformer)
-- [x] `JwtAccessGuard` / `JwtRefreshGuard` (global auth) + one role guard per role
-      (`AdminRoleGuard`, `GalleryRoleGuard`, `ArtistRoleGuard`, `CollectorRoleGuard`)
+- [x] Custom pipes: `FrenchDatePipe` (business transformation - parses `DD/MM/YYYY` into a
+      `Date`, used by `GET /sales?since=`) and `MaxActiveArtworksPipe` (business validation -
+      request-scoped, enforces the 50-active-artworks-per-artist rule on
+      `POST /artists/art-work`)
+- [x] `JwtAccessGuard` / `JwtRefreshGuard` (global auth) + `RolesGuard`, a single
+      `Reflector`-based guard reading the roles declared with `@Roles(...)` on each route
+      (`ROLES_KEY` metadata, `reflector.getAllAndOverride`)
+- [x] `OwnershipGuard` (a guard factory, same pattern as Passport's own `AuthGuard('jwt')`):
+      checks the target art work belongs to the caller's gallery and/or the caller themself as
+      its artist, admins always pass. Reads the art work id from a route param or a body field
+      depending on how it's configured per route, and is applied on
+      `PATCH/DELETE /artworks/:id`, `PATCH /artworks/:id/status` and `POST /sales`
 - [x] Response-envelope interceptor (`{ success, data, timestamp }`) + request-logging
       interceptor (writes to `logs/requests.log`)
 - [x] Global exception filter formatting every `HttpException` into one consistent error shape
@@ -180,9 +192,6 @@ See [§9](#9-known-limitations--remaining-work) for what is intentionally **not*
   `synchronize: true`.
 - **JWT access + refresh, rotated and revocable.** Access tokens are short-lived; refresh tokens
   are stored hashed and rotated on every use so a stolen refresh token can be revoked.
-- **One role guard per role rather than a single generic `RolesGuard` + `@Roles()` decorator.**
-  This works, but duplicates the same four lines four times - see [§9](#9-known-limitations--remaining-work),
-  this is the first refactor worth doing.
 - **Response envelope + a single global exception filter.** Every response (success or error)
   has the same predictable shape, which keeps API consumers (and this README's Swagger
   walkthrough) simple.
@@ -233,17 +242,6 @@ lives in `src/core`, and code shared by more than one module (enums, base DTOs, 
 Honest list of what the assignment asks for and this codebase does not implement yet - useful
 both for grading and as a to-do list:
 
-- **No custom business pipe.** All validation today is either the global DTO `ValidationPipe` or
-  plain `if` checks inside services (e.g. the 50-artworks-per-artist rule in
-  `AddArtworkService`). The assignment specifically asks for at least one custom
-  transformation pipe and one custom business-validation pipe.
-- **No `OwnershipGuard`.** "Does this artwork belong to the caller's gallery?" is currently
-  checked with an inline `assertCanSell` / `assertCanManage` method duplicated across
-  `CreateSaleService`, `ChangeArtWorkStatusService`, `UpdateArtWorkService`, ... A guard would
-  remove that duplication and match the assignment's explicit ask.
-- **No generic `RolesGuard` + `@Roles()` decorator.** Four near-identical guard classes
-  (`AdminRoleGuard`, `GalleryRoleGuard`, `ArtistRoleGuard`, `CollectorRoleGuard`) do the same job
-  a single `Reflector`-based guard + decorator would do in one place.
 - **No dedicated business-exception filter.** `GlobalExceptionsHandlerFilter` only catches
   `@Catch(HttpException)` - a non-`HttpException` error (a raw driver error, for instance) is not
   reformatted into the standard envelope. A `BusinessRuleViolation`-style filter, plus widening
