@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { api, ApiError } from '../../../lib/api';
+import { api, getErrorMessage } from '../../../lib/api';
 import type { GalleryUser } from '../../../types/api';
 import { Alert, Badge, EmptyState, Spinner } from '../../../components/ui';
 
@@ -14,7 +14,7 @@ export function GalleriesTab() {
     api
       .get<GalleryUser[]>(`/gallery?pending=${pendingOnly}`)
       .then(setGalleries)
-      .catch((err: unknown) => setError(err instanceof ApiError ? err.message : 'Failed to load galleries'));
+      .catch((err: unknown) => setError(getErrorMessage(err, 'Failed to load galleries')));
   };
 
   useEffect(load, [pendingOnly]);
@@ -25,7 +25,7 @@ export function GalleriesTab() {
       await api.get(`/admin/validate-gallery-account?galleryId=${galleryId}`);
       load();
     } catch (err) {
-      setActionError(err instanceof ApiError ? err.message : 'Failed to validate gallery');
+      setActionError(getErrorMessage(err, 'Failed to validate gallery'));
     }
   }
 

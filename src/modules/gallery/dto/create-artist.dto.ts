@@ -22,9 +22,10 @@ export class CreateArtistDto {
   @MaxLength(255)
   lastName: string;
 
-  @ApiProperty({ description: 'Short biography of the artist' })
+  @ApiProperty({ description: 'Short biography of the artist', maxLength: 2000 })
   @IsNotEmpty()
   @IsString()
+  @MaxLength(2000)
   bio: string;
 
   @ApiProperty({ description: 'Link to the artist portfolio', example: 'https://…' })

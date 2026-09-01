@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import type { FormEvent } from 'react';
-import { api, ApiError } from '../../../lib/api';
+import { api, getErrorMessage } from '../../../lib/api';
 import type { ArtWorkResponse, SaleResponse } from '../../../types/api';
 import { ArtWorkStatus } from '../../../types/api';
 import { Alert, EmptyState, Spinner, formatDate, formatMoney } from '../../../components/ui';
@@ -15,11 +15,14 @@ export function SalesTab() {
     api
       .get<SaleResponse[]>('/sales')
       .then(setSales)
-      .catch((err: unknown) => setError(err instanceof ApiError ? err.message : 'Failed to load sales'));
+      .catch((err: unknown) => setError(getErrorMessage(err, 'Failed to load sales')));
     api
       .get<ArtWorkResponse[]>(`/artworks?status=${ArtWorkStatus.AVAILABLE}`)
       .then(setAvailableArtWorks)
-      .catch(() => setAvailableArtWorks([]));
+      .catch((err: unknown) => {
+        setAvailableArtWorks([]);
+        setError(getErrorMessage(err, 'Failed to load available art works'));
+      });
   };
 
   useEffect(load, []);
@@ -100,7 +103,7 @@ function RecordSaleForm({
       });
       onCreated();
     } catch (err) {
-      setError(err instanceof ApiError ? err.message : 'Failed to record sale');
+      setError(getErrorMessage(err, 'Failed to record sale'));
     } finally {
       setSubmitting(false);
     }

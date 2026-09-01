@@ -31,7 +31,9 @@ export class GetArtistService {
   }
 
   public async list(): Promise<ArtistUserResponseDto[]> {
-    const artists = (await this.artistRepository.find()) as ArtistWithRelations[];
+    const artists = (await this.artistRepository.find({
+      relations: { user: true, gallery: { user: true } },
+    })) as ArtistWithRelations[];
     return artists.map(toArtistDto);
   }
 

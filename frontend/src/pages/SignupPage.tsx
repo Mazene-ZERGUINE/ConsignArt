@@ -2,7 +2,7 @@ import { useState } from 'react';
 import type { FormEvent } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
-import { api, ApiError } from '../lib/api';
+import { api, getErrorMessage } from '../lib/api';
 import { UserRoles } from '../types/api';
 import type { UserRole } from '../types/api';
 import { Alert } from '../components/ui';
@@ -35,10 +35,10 @@ export function SignupPage() {
         userRole,
         ...(userRole === UserRoles.GALLERY && { galleryName }),
       });
-      await login(email, password, userRole);
+      await login(email, password);
       navigate(HOME_BY_ROLE[userRole]);
     } catch (err) {
-      setError(err instanceof ApiError ? err.message : 'Signup failed');
+      setError(getErrorMessage(err, 'Signup failed'));
     } finally {
       setSubmitting(false);
     }

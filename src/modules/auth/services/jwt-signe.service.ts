@@ -1,6 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { JwtService } from '@nestjs/jwt';
+import { randomUUID } from 'node:crypto';
 import { UserEntity } from '../../users/entities/user.entity';
 import { JwtToken } from '../dto/auth-token.dto';
 import { InjectRepository } from '@nestjs/typeorm';
@@ -27,8 +28,11 @@ export class JwtSignService {
       },
     );
 
+    // jti guarantees a unique token string even when two tokens are issued for the
+    // same user within the same second (JWT `iat` has second-level granularity),
+    // which would otherwise collide against the hashed_token unique constraint.
     const refreshToken = this.jwtService.sign(
-      { sub, email, role },
+      { sub, email, role, jti: randomUUID() },
       {
         secret: this.configService.get<string>('JWT_REFRESH_SECRET'),
       },

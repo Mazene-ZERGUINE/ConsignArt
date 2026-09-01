@@ -1,6 +1,14 @@
-import { Body, Controller, Get, HttpCode, HttpStatus, Param, ParseUUIDPipe, Post, UseGuards } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Get,
+  HttpCode,
+  HttpStatus,
+  Param,
+  ParseUUIDPipe,
+  Post,
+} from '@nestjs/common';
 import { ApiBearerAuth, ApiOperation, ApiTags } from '@nestjs/swagger';
-import { JwtAccessGuard } from '../../core/guards/jwt-access.guard';
 import { AuthUser } from '../../shared/decorators/authenticated-user.decorator';
 import { type AuthenticatedUser } from '../../core/types/authenticated-user.types';
 import { CreateSaleDto } from './dto/create-sale.dto';
@@ -17,12 +25,11 @@ export class SellContractsController {
     private readonly getSales: GetSalesService,
   ) {}
 
-  @UseGuards(JwtAccessGuard)
   @Post()
   @HttpCode(HttpStatus.CREATED)
   @ApiOperation({
     description:
-      'Endpoint used by the owning gallery or an admin to record the sale of an art work to a collector (computes the gallery commission, the artist balance, generates the invoice/receipt and marks the art work as sold)',
+      'Endpoint used by a collector to buy an available art work for themselves, or by the owning gallery/an admin to record a sale on behalf of a collector (computes the gallery commission, the artist balance, generates the invoice/receipt and marks the art work as sold)',
   })
   public async create(
     @AuthUser() requester: AuthenticatedUser,
@@ -31,7 +38,6 @@ export class SellContractsController {
     return this.createSale.execute(requester, dto);
   }
 
-  @UseGuards(JwtAccessGuard)
   @Get()
   @HttpCode(HttpStatus.OK)
   @ApiOperation({
@@ -42,7 +48,6 @@ export class SellContractsController {
     return this.getSales.list(requester);
   }
 
-  @UseGuards(JwtAccessGuard)
   @Get(':id')
   @HttpCode(HttpStatus.OK)
   @ApiOperation({

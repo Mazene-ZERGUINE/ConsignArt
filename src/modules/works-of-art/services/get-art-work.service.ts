@@ -1,6 +1,6 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { FindOptionsWhere, Repository } from 'typeorm';
+import { FindOptionsWhere, MoreThanOrEqual, Repository } from 'typeorm';
 import { ArtWorkEntity } from '../entities/art-work.entity';
 import { ArtWorkResponseDto } from '../dto/art-work-response.dto';
 import { LoadedArtWork, toArtWorkDto } from '../mappers/art-work.mapper';
@@ -28,9 +28,10 @@ export class GetArtWorkService {
   public async list(
     requester: AuthenticatedUser,
     status?: ArtWorkStatus,
+    submittedAfter?: string,
   ): Promise<ArtWorkResponseDto[]> {
     const artWorks = (await this.artWorkRepository.find({
-      where: this.buildScope(requester, status),
+      where: this.buildScope(requester, status, submittedAfter),
       relations: { owner: { user: true }, gallery: { user: true }, expositions: { gallery: true } },
     })) as LoadedArtWork[];
 
@@ -40,9 +41,11 @@ export class GetArtWorkService {
   private buildScope(
     requester: AuthenticatedUser,
     status?: ArtWorkStatus,
+    submittedAfter?: string,
   ): FindOptionsWhere<ArtWorkEntity> {
     const where: FindOptionsWhere<ArtWorkEntity> = {};
     if (status) where.status = status;
+    if (submittedAfter) where.submitDate = MoreThanOrEqual(new Date(submittedAfter));
 
     switch (requester.role) {
       case UserRoles.GALLERY:

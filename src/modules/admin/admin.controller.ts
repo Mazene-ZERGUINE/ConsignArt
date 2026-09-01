@@ -6,17 +6,17 @@ import {
   HttpStatus,
   Param,
   ParseEnumPipe,
+  ParseUUIDPipe,
   Patch,
   Post,
   Query,
-  UseGuards,
 } from '@nestjs/common';
 import { ApiOperation, ApiTags } from '@nestjs/swagger';
 import { ValidateGalleryAccountService } from './services/validate-gallery-account.service';
 import { AuthUser } from '../../shared/decorators/authenticated-user.decorator';
 import { type AuthenticatedUser } from '../../core/types/authenticated-user.types';
-import { JwtAccessGuard } from '../../core/guards/jwt-access.guard';
-import { AdminRoleGuard } from '../../core/guards/admin-role.guard';
+import { Roles } from '../../shared/decorators/roles.decorator';
+import { UserRoles } from '../../shared/enums/user-roles.enum';
 import {
   TransferRequestActionType,
   type TransferRequestStatus,
@@ -30,6 +30,7 @@ import { CreateAdminDto } from './dto/create-admin.dto';
 import { UserResponseDto } from '../../shared/dto/base-user-response.dto';
 
 @ApiTags('Admin')
+@Roles(UserRoles.ADMIN)
 @Controller('admin')
 export class AdminController {
   constructor(
@@ -39,7 +40,6 @@ export class AdminController {
     private readonly createAdminAccount: CreateAdminAccountService,
   ) {}
 
-  @UseGuards(JwtAccessGuard, AdminRoleGuard)
   @Post('accounts')
   @HttpCode(HttpStatus.CREATED)
   @ApiOperation({
@@ -53,20 +53,18 @@ export class AdminController {
     return await this.createAdminAccount.execute(dto);
   }
 
-  @UseGuards(JwtAccessGuard, AdminRoleGuard)
   @Get('validate-gallery-account')
   @HttpCode(HttpStatus.OK)
   @ApiOperation({
     description: 'Endpoint used only by admin account in order to validate a gallery account',
   })
   public async validateGallery(
-    @Query('galleryId') galleryId: string,
+    @Query('galleryId', ParseUUIDPipe) galleryId: string,
     @AuthUser() user: AuthenticatedUser,
   ): Promise<void> {
     await this.validateGalleryAccount.execute(galleryId, user.userId);
   }
 
-  @UseGuards(JwtAccessGuard, AdminRoleGuard)
   @Get('transfer-requests')
   @HttpCode(HttpStatus.OK)
   @ApiOperation({
@@ -79,7 +77,6 @@ export class AdminController {
     return await this.getTransferRequests.execute(transferStatus);
   }
 
-  @UseGuards(JwtAccessGuard, AdminRoleGuard)
   @Patch('transfer-requests/:id/action')
   @HttpCode(HttpStatus.NO_CONTENT)
   @ApiOperation({

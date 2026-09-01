@@ -1,13 +1,22 @@
 import { useEffect, useState } from 'react';
 import type { FormEvent } from 'react';
-import { api, ApiError } from '../../../lib/api';
-import type { ArtWorkResponse, LoanResponse } from '../../../types/api';
+import { api, getErrorMessage } from '../../../lib/api';
+import { useAuth } from '../../../context/AuthContext';
+import type {
+  ArtWorkResponse,
+  GalleryDirectoryEntry,
+  GalleryUser,
+  LoanResponse,
+} from '../../../types/api';
 import { ArtWorkStatus } from '../../../types/api';
 import { Alert, EmptyState, Spinner, formatDate } from '../../../components/ui';
 
 export function LoansTab() {
+  const { user } = useAuth();
+  const gallery = user as GalleryUser;
   const [loans, setLoans] = useState<LoanResponse[] | null>(null);
   const [availableArtWorks, setAvailableArtWorks] = useState<ArtWorkResponse[]>([]);
+  const [galleries, setGalleries] = useState<GalleryDirectoryEntry[]>([]);
   const [error, setError] = useState<string | null>(null);
   const [formOpen, setFormOpen] = useState(false);
 
@@ -15,11 +24,21 @@ export function LoansTab() {
     api
       .get<LoanResponse[]>('/loans')
       .then(setLoans)
-      .catch((err: unknown) => setError(err instanceof ApiError ? err.message : 'Failed to load loans'));
+      .catch((err: unknown) => setError(getErrorMessage(err, 'Failed to load loans')));
     api
       .get<ArtWorkResponse[]>(`/artworks?status=${ArtWorkStatus.AVAILABLE}`)
       .then(setAvailableArtWorks)
-      .catch(() => setAvailableArtWorks([]));
+      .catch((err: unknown) => {
+        setAvailableArtWorks([]);
+        setError(getErrorMessage(err, 'Failed to load available art works'));
+      });
+    api
+      .get<GalleryDirectoryEntry[]>('/gallery/directory')
+      .then((all) => setGalleries(all.filter((g) => g.entityId !== gallery.entityId)))
+      .catch((err: unknown) => {
+        setGalleries([]);
+        setError(getErrorMessage(err, 'Failed to load galleries'));
+      });
   };
 
   useEffect(load, []);
@@ -36,6 +55,7 @@ export function LoansTab() {
       {formOpen && (
         <LoanForm
           availableArtWorks={availableArtWorks}
+          galleries={galleries}
           onCreated={() => {
             setFormOpen(false);
             load();
@@ -73,7 +93,15 @@ export function LoansTab() {
   );
 }
 
-function LoanForm({ availableArtWorks, onCreated }: { availableArtWorks: ArtWorkResponse[]; onCreated: () => void }) {
+function LoanForm({
+  availableArtWorks,
+  galleries,
+  onCreated,
+}: {
+  availableArtWorks: ArtWorkResponse[];
+  galleries: GalleryDirectoryEntry[];
+  onCreated: () => void;
+}) {
   const [artWorkId, setArtWorkId] = useState('');
   const [toGalleryId, setToGalleryId] = useState('');
   const [from, setFrom] = useState('');
@@ -90,7 +118,7 @@ function LoanForm({ availableArtWorks, onCreated }: { availableArtWorks: ArtWork
       await api.post('/loans', { artWorkId, toGalleryId, from, to, conditions });
       onCreated();
     } catch (err) {
-      setError(err instanceof ApiError ? err.message : 'Failed to record loan');
+      setError(getErrorMessage(err, 'Failed to record loan'));
     } finally {
       setSubmitting(false);
     }
@@ -115,8 +143,17 @@ function LoanForm({ availableArtWorks, onCreated }: { availableArtWorks: ArtWork
             </select>
           </div>
           <div className="form-group">
-            <label>Destination gallery ID</label>
-            <input value={toGalleryId} onChange={(e) => setToGalleryId(e.target.value)} required />
+            <label>Destination gallery</label>
+            <select value={toGalleryId} onChange={(e) => setToGalleryId(e.target.value)} required>
+              <option value="" disabled>
+                Select a gallery…
+              </option>
+              {galleries.map((gallery) => (
+                <option key={gallery.entityId} value={gallery.entityId}>
+                  {gallery.name} ({gallery.email})
+                </option>
+              ))}
+            </select>
           </div>
           <div className="form-group">
             <label>From</label>

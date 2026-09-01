@@ -1,0 +1,32 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="800" height="600" viewBox="0 0 800 600">
+  <defs>
+    <linearGradient id="sky" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#2c3e66"/>
+      <stop offset="45%" stop-color="#a76b8f"/>
+      <stop offset="75%" stop-color="#f0a25f"/>
+      <stop offset="100%" stop-color="#fbd39a"/>
+    </linearGradient>
+    <linearGradient id="water" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#f0a25f"/>
+      <stop offset="100%" stop-color="#3a3358"/>
+    </linearGradient>
+  </defs>
+  <rect width="800" height="600" fill="url(#sky)"/>
+  <rect y="380" width="800" height="220" fill="url(#water)"/>
+  <circle cx="600" cy="360" r="46" fill="#fff2d6"/>
+  <g fill="#241c3a" opacity="0.9">
+    <rect x="60" y="270" width="30" height="110"/>
+    <rect x="100" y="230" width="24" height="150"/>
+    <polygon points="112,200 100,230 124,230"/>
+    <rect x="140" y="290" width="34" height="90"/>
+    <rect x="190" y="250" width="20" height="130"/>
+    <rect x="220" y="300" width="40" height="80"/>
+    <polygon points="240,265 220,300 260,300"/>
+  </g>
+  <g stroke="#fbe3b8" stroke-width="3" opacity="0.5">
+    <line x1="600" y1="406" x2="600" y2="430"/>
+    <line x1="560" y1="440" x2="640" y2="440"/>
+    <line x1="540" y1="475" x2="660" y2="475"/>
+    <line x1="510" y1="515" x2="690" y2="515"/>
+  </g>
+</svg>

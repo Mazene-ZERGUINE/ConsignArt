@@ -9,8 +9,8 @@ import { UserResponseDto } from '../../shared/dto/base-user-response.dto';
 import { GetAuthenticatedUserService } from './services/get-authenticated-user.service';
 import { AuthUser } from '../../shared/decorators/authenticated-user.decorator';
 import { type AuthenticatedUser } from '../../core/types/authenticated-user.types';
-import { JwtAccessGuard } from '../../core/guards/jwt-access.guard';
 import { JwtRefreshGuard } from '../../core/guards/jwt-refresh.guard';
+import { Public } from '../../shared/decorators/public.decorator';
 import { type Request } from 'express';
 import { RefreshTokenService } from './services/refresh-token.service';
 import { JwtPayload } from '../../core/types/jwt-payload.types';
@@ -27,6 +27,7 @@ export class AuthController {
     private readonly logOut: LogoutService,
   ) {}
 
+  @Public()
   @Post('signup')
   @HttpCode(HttpStatus.CREATED)
   @ApiOperation({
@@ -40,6 +41,7 @@ export class AuthController {
     return await this.signuUp.execute(dto);
   }
 
+  @Public()
   @Post('login')
   @HttpCode(HttpStatus.OK)
   @ApiOperation({
@@ -57,7 +59,6 @@ export class AuthController {
     return await this.logIn.execute(dto);
   }
 
-  @UseGuards(JwtAccessGuard)
   @Get('me')
   @HttpCode(HttpStatus.OK)
   @ApiOperation({
@@ -70,7 +71,6 @@ export class AuthController {
     return this.getAuthenticatedUser.execute(user.userId);
   }
 
-  @UseGuards(JwtAccessGuard)
   @Post('logout')
   @HttpCode(HttpStatus.NO_CONTENT)
   @ApiOperation({
@@ -81,6 +81,7 @@ export class AuthController {
     await this.logOut.execute(user.userId);
   }
 
+  @Public()
   @UseGuards(JwtRefreshGuard)
   @Post('refresh-token')
   @HttpCode(HttpStatus.OK)

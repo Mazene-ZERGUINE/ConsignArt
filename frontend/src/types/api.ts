@@ -31,7 +31,8 @@ export const TransferRequestStatus = {
   APPROVED: 'approved',
   REJECTED: 'rejected',
 } as const;
-export type TransferRequestStatusType = (typeof TransferRequestStatus)[keyof typeof TransferRequestStatus];
+export type TransferRequestStatusType =
+  (typeof TransferRequestStatus)[keyof typeof TransferRequestStatus];
 
 export type BaseUser = {
   userId: string;
@@ -56,6 +57,22 @@ export type GallerySummary = {
   entityId: string;
   galleryVerified: boolean;
   email: string;
+};
+
+export type GalleryDirectoryEntry = {
+  userId: string;
+  entityId: string;
+  name: string;
+  email: string;
+};
+
+export type ArtWorkHistoryEntry = {
+  previousStatus: ArtWorkStatusType;
+  newStatus: ArtWorkStatusType;
+  isLoaned: boolean;
+  fromGalleryName: string | null;
+  toGalleryName: string | null;
+  changedAt: string;
 };
 
 export type ArtistUser = BaseUser & {

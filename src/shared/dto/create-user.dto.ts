@@ -4,6 +4,7 @@ import {
   IsNotEmpty,
   IsString,
   Matches,
+  MaxLength,
   MinLength,
   ValidateIf,
 } from 'class-validator';
@@ -24,6 +25,7 @@ export class CreateUserDto {
   @IsString()
   @IsNotEmpty()
   @MinLength(12, { message: 'Password must be at least 12 characters long' })
+  @MaxLength(72, { message: 'Password must be at most 72 characters long' })
   @Matches(/((?=.*\d)|(?=.*\W+))(?![.\n])(?=.*[A-Z])(?=.*[a-z]).*$/, {
     message:
       'Password must contain at least one uppercase letter, one lowercase letter, one number or special character',
@@ -45,5 +47,6 @@ export class CreateUserDto {
   @ValidateIf((dto: CreateUserDto) => dto.userRole === UserRoles.GALLERY)
   @IsString()
   @IsNotEmpty()
+  @MaxLength(255)
   galleryName?: string;
 }

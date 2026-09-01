@@ -17,6 +17,7 @@ import { UserRoles } from '../../../../shared/enums/user-roles.enum';
 import { ArtWorkStatusEnum } from '../../../../shared/enums/art-work-status.enum';
 import { type AuthenticatedUser } from '../../../../core/types/authenticated-user.types';
 import { type LoadedArtWork } from '../../../works-of-art/mappers/art-work.mapper';
+import { BusinessRuleViolationException } from '../../../../core/exceptions/business-rule-violation.exception';
 
 @Injectable()
 export class CreateLoanService {
@@ -37,16 +38,25 @@ export class CreateLoanService {
       this.assertCanLend(requester, artWork);
 
       if (artWork.status === ArtWorkStatusEnum.ON_LOAN) {
-        throw new BadRequestException('This art work is already on loan');
+        throw new BusinessRuleViolationException(
+          'This art work is already on loan',
+          'ART_WORK_ALREADY_ON_LOAN',
+        );
       }
       if (artWork.status !== ArtWorkStatusEnum.AVAILABLE) {
-        throw new BadRequestException('Only available art works can be lent');
+        throw new BusinessRuleViolationException(
+          'Only available art works can be lent',
+          'ART_WORK_NOT_AVAILABLE',
+        );
       }
 
       const toGallery = await manager.findOne(GalleryEntity, { where: { id: dto.toGalleryId } });
       if (!toGallery) throw new NotFoundException('Destination gallery not found');
       if (toGallery.id === artWork.gallery.id) {
-        throw new BadRequestException('Cannot lend an art work to its own gallery');
+        throw new BusinessRuleViolationException(
+          'Cannot lend an art work to its own gallery',
+          'CANNOT_LEND_TO_OWN_GALLERY',
+        );
       }
 
       const loan = manager.create(WorkArtLoanEntity, {
@@ -71,7 +81,12 @@ export class CreateLoanService {
 
       await manager.update(ArtWorkEntity, artWork.id, { status: ArtWorkStatusEnum.ON_LOAN });
 
-      const loaded: LoadedLoan = { ...loan, workArt: artWork, fromGallery: artWork.gallery, toGallery };
+      const loaded: LoadedLoan = {
+        ...loan,
+        workArt: artWork,
+        fromGallery: artWork.gallery,
+        toGallery,
+      };
       return toLoanDto(loaded);
     });
   }

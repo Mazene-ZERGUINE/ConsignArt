@@ -1,12 +1,12 @@
 import { createContext, useCallback, useContext, useEffect, useMemo, useState } from 'react';
 import type { ReactNode } from 'react';
 import { api, getTokens, setTokens } from '../lib/api';
-import type { AuthenticatedUser, AuthResponse, UserRole } from '../types/api';
+import type { AuthenticatedUser, AuthResponse } from '../types/api';
 
 type AuthContextValue = {
   user: AuthenticatedUser | null;
   loading: boolean;
-  login: (email: string, password: string, userRole: UserRole) => Promise<void>;
+  login: (email: string, password: string) => Promise<AuthenticatedUser>;
   logout: () => Promise<void>;
   refreshUser: () => Promise<void>;
 };
@@ -36,10 +36,11 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  const login = useCallback(async (email: string, password: string, userRole: UserRole) => {
-    const response = await api.publicPost<AuthResponse>('/auth/login', { email, password, userRole });
+  const login = useCallback(async (email: string, password: string) => {
+    const response = await api.publicPost<AuthResponse>('/auth/login', { email, password });
     setTokens(response.token);
     setUser(response.user);
+    return response.user;
   }, []);
 
   const logout = useCallback(async () => {

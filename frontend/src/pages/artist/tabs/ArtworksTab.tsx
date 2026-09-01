@@ -1,8 +1,9 @@
 import { useEffect, useState } from 'react';
 import type { FormEvent } from 'react';
-import { api, ApiError } from '../../../lib/api';
+import { api, getErrorMessage } from '../../../lib/api';
 import type { ArtWorkResponse, CreateArtWorkPayload } from '../../../types/api';
 import { Alert, Badge, EmptyState, Spinner, formatMoney } from '../../../components/ui';
+import { ArtWorkHistoryToggle } from '../../../components/ArtWorkHistory';
 
 const EMPTY_FORM: CreateArtWorkPayload = {
   title: '',
@@ -24,7 +25,7 @@ export function ArtworksTab() {
     api
       .get<ArtWorkResponse[]>('/artists/art-works')
       .then(setArtWorks)
-      .catch((err: unknown) => setError(err instanceof ApiError ? err.message : 'Failed to load art works'));
+      .catch((err: unknown) => setError(getErrorMessage(err, 'Failed to load art works')));
   };
 
   useEffect(load, []);
@@ -35,7 +36,7 @@ export function ArtworksTab() {
       await api.delete(`/artworks/${id}`);
       load();
     } catch (err) {
-      setActionError(err instanceof ApiError ? err.message : 'Failed to delete art work');
+      setActionError(getErrorMessage(err, 'Failed to delete art work'));
     }
   }
 
@@ -73,9 +74,12 @@ export function ArtworksTab() {
               <div style={{ margin: '0.5rem 0' }}>
                 <Badge value={artWork.status} />
               </div>
-              <button className="btn btn-danger btn-sm" onClick={() => void remove(artWork.id)}>
-                Delete
-              </button>
+              <div style={{ display: 'flex', gap: '0.4rem' }}>
+                <button className="btn btn-danger btn-sm" onClick={() => void remove(artWork.id)}>
+                  Delete
+                </button>
+                <ArtWorkHistoryToggle artWorkId={artWork.id} />
+              </div>
             </div>
           ))}
         </div>
@@ -101,7 +105,7 @@ function ArtWorkForm({ onCreated }: { onCreated: () => void }) {
       await api.post('/artists/art-work', form);
       onCreated();
     } catch (err) {
-      setError(err instanceof ApiError ? err.message : 'Failed to add art work');
+      setError(getErrorMessage(err, 'Failed to add art work'));
     } finally {
       setSubmitting(false);
     }
@@ -114,11 +118,20 @@ function ArtWorkForm({ onCreated }: { onCreated: () => void }) {
         <div className="form-grid">
           <div className="form-group">
             <label>Title</label>
-            <input maxLength={60} value={form.title} onChange={(e) => update('title', e.target.value)} required />
+            <input
+              maxLength={60}
+              value={form.title}
+              onChange={(e) => update('title', e.target.value)}
+              required
+            />
           </div>
           <div className="form-group">
             <label>Technique</label>
-            <input value={form.technique} onChange={(e) => update('technique', e.target.value)} required />
+            <input
+              value={form.technique}
+              onChange={(e) => update('technique', e.target.value)}
+              required
+            />
           </div>
           <div className="form-group">
             <label>Creation year</label>
@@ -132,7 +145,11 @@ function ArtWorkForm({ onCreated }: { onCreated: () => void }) {
           </div>
           <div className="form-group">
             <label>Image URL</label>
-            <input value={form.imageUrl} onChange={(e) => update('imageUrl', e.target.value)} required />
+            <input
+              value={form.imageUrl}
+              onChange={(e) => update('imageUrl', e.target.value)}
+              required
+            />
           </div>
           <div className="form-group">
             <label>Selling price (€)</label>
@@ -158,11 +175,19 @@ function ArtWorkForm({ onCreated }: { onCreated: () => void }) {
           </div>
           <div className="form-group">
             <label>Height (cm, optional)</label>
-            <input type="number" min={0} onChange={(e) => update('height', Number(e.target.value) || undefined)} />
+            <input
+              type="number"
+              min={0}
+              onChange={(e) => update('height', Number(e.target.value) || undefined)}
+            />
           </div>
           <div className="form-group">
             <label>Width (cm, optional)</label>
-            <input type="number" min={0} onChange={(e) => update('width', Number(e.target.value) || undefined)} />
+            <input
+              type="number"
+              min={0}
+              onChange={(e) => update('width', Number(e.target.value) || undefined)}
+            />
           </div>
         </div>
         <div className="form-group">

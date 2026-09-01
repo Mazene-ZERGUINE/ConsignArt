@@ -142,7 +142,7 @@ async function bootstrap(): Promise<void> {
     technique: 'oil',
     sellingPrice: 3000,
     reservationPrice: 2000,
-    imageUrl: 'https://picsum.photos/seed/consignart/800/600',
+    imageUrl: '/artwork-placeholder.svg',
     ...overrides,
   });
 
@@ -153,7 +153,7 @@ async function bootstrap(): Promise<void> {
       technique: 'oil',
       sellingPrice: 3000,
       reservationPrice: 2000,
-      imageUrl: 'https://picsum.photos/seed/quiet-horizon/800/600',
+      imageUrl: '/seed-artworks/quiet-horizon.svg',
     }),
   );
   await addArtwork.execute(
@@ -163,7 +163,7 @@ async function bootstrap(): Promise<void> {
       technique: 'oil',
       sellingPrice: 12000,
       reservationPrice: 9000,
-      imageUrl: 'https://picsum.photos/seed/autumn-drift/800/600',
+      imageUrl: '/seed-artworks/autumn-drift.svg',
     }),
   );
   await addArtwork.execute(
@@ -173,7 +173,7 @@ async function bootstrap(): Promise<void> {
       technique: 'sculpture',
       sellingPrice: 30000,
       reservationPrice: 25000,
-      imageUrl: 'https://picsum.photos/seed/steel-bloom/800/600',
+      imageUrl: '/seed-artworks/steel-bloom.svg',
     }),
   );
   await addArtwork.execute(
@@ -183,7 +183,7 @@ async function bootstrap(): Promise<void> {
       technique: 'sculpture',
       sellingPrice: 8000,
       reservationPrice: 6000,
-      imageUrl: 'https://picsum.photos/seed/glass-current/800/600',
+      imageUrl: '/seed-artworks/glass-current.svg',
     }),
   );
   await addArtwork.execute(
@@ -193,7 +193,7 @@ async function bootstrap(): Promise<void> {
       technique: 'photography',
       sellingPrice: 5000,
       reservationPrice: 4000,
-      imageUrl: 'https://picsum.photos/seed/harbor-light/800/600',
+      imageUrl: '/seed-artworks/harbor-light.svg',
     }),
   );
   await addArtwork.execute(
@@ -203,7 +203,7 @@ async function bootstrap(): Promise<void> {
       technique: 'photography',
       sellingPrice: 15000,
       reservationPrice: 10000,
-      imageUrl: 'https://picsum.photos/seed/northern-drift/800/600',
+      imageUrl: '/seed-artworks/northern-drift.svg',
     }),
   );
 
@@ -252,7 +252,9 @@ async function bootstrap(): Promise<void> {
   logger.log('  admin: admin@consignart.test');
   logger.log('  gallery (validated): gallery.a@consignart.test, gallery.b@consignart.test');
   logger.log('  gallery (pending validation): gallery.c@consignart.test');
-  logger.log('  artists: artist.elena@consignart.test, artist.marcus@consignart.test, artist.sofia@consignart.test');
+  logger.log(
+    '  artists: artist.elena@consignart.test, artist.marcus@consignart.test, artist.sofia@consignart.test',
+  );
   logger.log('  collectors: collector.1@consignart.test, collector.2@consignart.test');
 
   await app.close();
@@ -262,7 +264,9 @@ async function getArtWorksByTitle(
   dataSource: DataSource,
   titles: string[],
 ): Promise<Record<string, string>> {
-  const rows = await dataSource.getRepository(ArtWorkEntity).find({ where: titles.map((title) => ({ title })) });
+  const rows = await dataSource
+    .getRepository(ArtWorkEntity)
+    .find({ where: titles.map((title) => ({ title })) });
 
   return Object.fromEntries(rows.map((row) => [row.title, row.id]));
 }

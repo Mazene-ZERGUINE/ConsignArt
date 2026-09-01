@@ -11,7 +11,7 @@ services:
       NODE_ENV: development
       DB_DATABASE: /app/data/app.sqlite
     ports:
-      - "${SERVER_PORT:-3000}:${SERVER_PORT:-3000}"
+      - "5000:5000"
     volumes:
       - ./src:/app/src
       - ./test:/app/test
@@ -22,5 +22,28 @@ services:
       - /app/node_modules
       - ./data:/app/data
       - ./logs:/app/logs
-    command: npm run start:dev
+    command: sh -c "npm run seed:dev; npm run start:dev"
+    restart: unless-stopped
+
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+      target: dev
+    container_name: art-frontend-dev
+    environment:
+      VITE_API_URL: http://localhost:5000/api/v1
+    ports:
+      - "5173:5173"
+    volumes:
+      - ./frontend/src:/app/src
+      - ./frontend/public:/app/public
+      - ./frontend/index.html:/app/index.html
+      - ./frontend/vite.config.ts:/app/vite.config.ts
+      - ./frontend/tsconfig.json:/app/tsconfig.json
+      - ./frontend/tsconfig.app.json:/app/tsconfig.app.json
+      - ./frontend/tsconfig.node.json:/app/tsconfig.node.json
+      - /app/node_modules
+    depends_on:
+      - api
     restart: unless-stopped

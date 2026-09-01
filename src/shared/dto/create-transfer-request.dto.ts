@@ -1,4 +1,4 @@
-import { IsNotEmpty, IsString, IsUUID } from 'class-validator';
+import { IsNotEmpty, IsString, IsUUID, MaxLength } from 'class-validator';
 
 export class CreateTransferRequestDto {
   @IsUUID()
@@ -7,5 +7,6 @@ export class CreateTransferRequestDto {
 
   @IsString()
   @IsNotEmpty()
+  @MaxLength(500)
   reason: string;
 }

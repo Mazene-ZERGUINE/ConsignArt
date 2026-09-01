@@ -16,10 +16,11 @@ export class UpdateArtistDto {
   @MaxLength(255)
   lastName?: string;
 
-  @ApiPropertyOptional({ description: 'Short biography of the artist' })
+  @ApiPropertyOptional({ description: 'Short biography of the artist', maxLength: 2000 })
   @IsOptional()
   @IsString()
   @IsNotEmpty()
+  @MaxLength(2000)
   bio?: string;
 
   @ApiPropertyOptional({ description: 'Link to the artist portfolio', example: 'https://…' })

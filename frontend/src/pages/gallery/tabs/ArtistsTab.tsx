@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import type { FormEvent } from 'react';
-import { api, ApiError } from '../../../lib/api';
+import { api, getErrorMessage } from '../../../lib/api';
 import { useAuth } from '../../../context/AuthContext';
 import type { ArtistUser, GalleryUser } from '../../../types/api';
 import { ActivityStatus } from '../../../types/api';
@@ -18,7 +18,7 @@ export function ArtistsTab() {
     api
       .get<ArtistUser[]>('/artists')
       .then((all) => setArtists(all.filter((artist) => artist.gallery?.userId === gallery.userId)))
-      .catch((err: unknown) => setError(err instanceof ApiError ? err.message : 'Failed to load artists'));
+      .catch((err: unknown) => setError(getErrorMessage(err, 'Failed to load artists')));
   };
 
   useEffect(load, [gallery.userId]);
@@ -29,7 +29,7 @@ export function ArtistsTab() {
       await api.patch(`/artists/${artistUserId}/status`, { status });
       load();
     } catch (err) {
-      setActionError(err instanceof ApiError ? err.message : 'Failed to update artist status');
+      setActionError(getErrorMessage(err, 'Failed to update artist status'));
     }
   }
 
@@ -125,7 +125,7 @@ function AddArtistForm({ onCreated }: { onCreated: () => void }) {
       });
       onCreated();
     } catch (err) {
-      setError(err instanceof ApiError ? err.message : 'Failed to add artist');
+      setError(getErrorMessage(err, 'Failed to add artist'));
     } finally {
       setSubmitting(false);
     }

@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { api, ApiError } from '../../../lib/api';
+import { api, getErrorMessage } from '../../../lib/api';
 import type { SaleResponse } from '../../../types/api';
 import { Alert, EmptyState, Spinner, formatDate, formatMoney } from '../../../components/ui';
 
@@ -11,7 +11,7 @@ export function PurchasesTab() {
     api
       .get<SaleResponse[]>('/sales')
       .then(setSales)
-      .catch((err: unknown) => setError(err instanceof ApiError ? err.message : 'Failed to load purchases'));
+      .catch((err: unknown) => setError(getErrorMessage(err, 'Failed to load purchases')));
   }, []);
 
   if (error) return <Alert type="error">{error}</Alert>;

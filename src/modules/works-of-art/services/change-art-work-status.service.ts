@@ -1,9 +1,4 @@
-import {
-  BadRequestException,
-  ForbiddenException,
-  Injectable,
-  NotFoundException,
-} from '@nestjs/common';
+import { ForbiddenException, Injectable, NotFoundException } from '@nestjs/common';
 import { InjectDataSource } from '@nestjs/typeorm';
 import { DataSource } from 'typeorm';
 import { ArtWorkEntity } from '../entities/art-work.entity';
@@ -14,6 +9,7 @@ import { LoadedArtWork, toArtWorkDto } from '../mappers/art-work.mapper';
 import { UserRoles } from '../../../shared/enums/user-roles.enum';
 import { ArtWorkStatusEnum } from '../../../shared/enums/art-work-status.enum';
 import { type AuthenticatedUser } from '../../../core/types/authenticated-user.types';
+import { BusinessRuleViolationException } from '../../../core/exceptions/business-rule-violation.exception';
 
 @Injectable()
 export class ChangeArtWorkStatusService {
@@ -41,10 +37,16 @@ export class ChangeArtWorkStatusService {
       const newStatus = dto.status;
 
       if (currentStatus === newStatus) {
-        throw new BadRequestException('The art work already has this status');
+        throw new BusinessRuleViolationException(
+          'The art work already has this status',
+          'ART_WORK_ALREADY_HAS_STATUS',
+        );
       }
       if (currentStatus === ArtWorkStatusEnum.ON_LOAN && newStatus === ArtWorkStatusEnum.SOLD) {
-        throw new BadRequestException('An art work on loan cannot be sold');
+        throw new BusinessRuleViolationException(
+          'An art work on loan cannot be sold',
+          'ART_WORK_ON_LOAN_CANNOT_BE_SOLD',
+        );
       }
 
       const history = manager.create(ArtWorkTransferHistoryEntity, {

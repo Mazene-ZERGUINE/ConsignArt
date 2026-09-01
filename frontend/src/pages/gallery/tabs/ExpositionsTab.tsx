@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import type { FormEvent } from 'react';
-import { api, ApiError } from '../../../lib/api';
+import { api, getErrorMessage } from '../../../lib/api';
 import type { ArtWorkResponse, ExpositionResponse, ExpositionTypeType } from '../../../types/api';
 import { ArtWorkStatus, ExpositionType } from '../../../types/api';
 import { Alert, Badge, EmptyState, Spinner, formatDate } from '../../../components/ui';
@@ -16,11 +16,14 @@ export function ExpositionsTab() {
     api
       .get<ExpositionResponse[]>('/expositions')
       .then(setExpositions)
-      .catch((err: unknown) => setError(err instanceof ApiError ? err.message : 'Failed to load expositions'));
+      .catch((err: unknown) => setError(getErrorMessage(err, 'Failed to load expositions')));
     api
       .get<ArtWorkResponse[]>(`/artworks?status=${ArtWorkStatus.AVAILABLE}`)
       .then(setAvailableArtWorks)
-      .catch(() => setAvailableArtWorks([]));
+      .catch((err: unknown) => {
+        setAvailableArtWorks([]);
+        setActionError(getErrorMessage(err, 'Failed to load available art works'));
+      });
   };
 
   useEffect(load, []);
@@ -31,7 +34,7 @@ export function ExpositionsTab() {
       await api.delete(`/expositions/${id}`);
       load();
     } catch (err) {
-      setActionError(err instanceof ApiError ? err.message : 'Failed to close exposition');
+      setActionError(getErrorMessage(err, 'Failed to close exposition'));
     }
   }
 
@@ -130,7 +133,7 @@ function ExpositionForm({
       });
       onCreated();
     } catch (err) {
-      setError(err instanceof ApiError ? err.message : 'Failed to create exposition');
+      setError(getErrorMessage(err, 'Failed to create exposition'));
     } finally {
       setSubmitting(false);
     }

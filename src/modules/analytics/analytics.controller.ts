@@ -1,9 +1,7 @@
-import { Controller, Get, HttpCode, HttpStatus, UseGuards } from '@nestjs/common';
+import { Controller, Get, HttpCode, HttpStatus } from '@nestjs/common';
 import { ApiBearerAuth, ApiOperation, ApiTags } from '@nestjs/swagger';
-import { JwtAccessGuard } from '../../core/guards/jwt-access.guard';
-import { GalleryRoleGuard } from '../../core/guards/gallery-role.guard';
-import { ArtistRoleGuard } from '../../core/guards/artist-role.guard';
-import { AdminRoleGuard } from '../../core/guards/admin-role.guard';
+import { Roles } from '../../shared/decorators/roles.decorator';
+import { UserRoles } from '../../shared/enums/user-roles.enum';
 import { AuthUser } from '../../shared/decorators/authenticated-user.decorator';
 import { type AuthenticatedUser } from '../../core/types/authenticated-user.types';
 import { GalleryStatsResponseDto } from './dto/gallery-stats-response.dto';
@@ -23,7 +21,7 @@ export class AnalyticsController {
     private readonly getAdminStats: GetAdminStatsService,
   ) {}
 
-  @UseGuards(JwtAccessGuard, GalleryRoleGuard)
+  @Roles(UserRoles.GALLERY)
   @Get('gallery')
   @HttpCode(HttpStatus.OK)
   @ApiOperation({
@@ -34,7 +32,7 @@ export class AnalyticsController {
     return this.getGalleryStats.execute(requester);
   }
 
-  @UseGuards(JwtAccessGuard, ArtistRoleGuard)
+  @Roles(UserRoles.ARTISTE)
   @Get('artist')
   @HttpCode(HttpStatus.OK)
   @ApiOperation({
@@ -45,7 +43,7 @@ export class AnalyticsController {
     return this.getArtistStats.execute(requester);
   }
 
-  @UseGuards(JwtAccessGuard, AdminRoleGuard)
+  @Roles(UserRoles.ADMIN)
   @Get('admin')
   @HttpCode(HttpStatus.OK)
   @ApiOperation({

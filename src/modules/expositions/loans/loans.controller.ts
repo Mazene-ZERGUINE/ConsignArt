@@ -7,10 +7,8 @@ import {
   Param,
   ParseUUIDPipe,
   Post,
-  UseGuards,
 } from '@nestjs/common';
 import { ApiBearerAuth, ApiOperation, ApiTags } from '@nestjs/swagger';
-import { JwtAccessGuard } from '../../../core/guards/jwt-access.guard';
 import { AuthUser } from '../../../shared/decorators/authenticated-user.decorator';
 import { type AuthenticatedUser } from '../../../core/types/authenticated-user.types';
 import { CreateLoanDto } from './dto/create-loan.dto';
@@ -27,7 +25,6 @@ export class LoansController {
     private readonly getLoans: GetLoansService,
   ) {}
 
-  @UseGuards(JwtAccessGuard)
   @Post()
   @HttpCode(HttpStatus.CREATED)
   @ApiOperation({
@@ -41,7 +38,6 @@ export class LoansController {
     return this.createLoan.execute(requester, dto);
   }
 
-  @UseGuards(JwtAccessGuard)
   @Get()
   @HttpCode(HttpStatus.OK)
   @ApiOperation({
@@ -52,7 +48,6 @@ export class LoansController {
     return this.getLoans.list(requester);
   }
 
-  @UseGuards(JwtAccessGuard)
   @Get(':id')
   @HttpCode(HttpStatus.OK)
   @ApiOperation({ description: 'Endpoint used to read a single loan by id' })

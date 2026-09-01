@@ -1,6 +1,6 @@
 import type { AuthTokens } from '../types/api';
 
-const API_BASE_URL = (import.meta.env.VITE_API_URL as string | undefined) ?? 'http://localhost:5000/api/v1';
+const API_BASE_URL = import.meta.env.VITE_API_URL ?? 'http://localhost:5000/api/v1';
 const TOKENS_KEY = 'consignart.tokens';
 
 export function getTokens(): AuthTokens | null {
@@ -29,6 +29,40 @@ export class ApiError extends Error {
   }
 }
 
+type ValidationErrorExtra = { field: string; errors: string[]; children?: ValidationErrorExtra[] };
+
+function isValidationErrorExtras(extras: unknown): extras is ValidationErrorExtra[] {
+  return (
+    Array.isArray(extras) &&
+    extras.every(
+      (e) =>
+        e &&
+        typeof e === 'object' &&
+        'field' in e &&
+        Array.isArray((e as ValidationErrorExtra).errors),
+    )
+  );
+}
+
+function flattenValidationErrors(extras: ValidationErrorExtra[]): string[] {
+  return extras.flatMap((e) => [
+    ...e.errors,
+    ...(e.children ? flattenValidationErrors(e.children) : []),
+  ]);
+}
+
+/** Builds a user-facing message from an ApiError, surfacing field-level validation errors when present. */
+export function getErrorMessage(err: unknown, fallback: string): string {
+  if (err instanceof ApiError) {
+    if (isValidationErrorExtras(err.extras)) {
+      const details = flattenValidationErrors(err.extras);
+      if (details.length > 0) return details.join(' · ');
+    }
+    return err.message || fallback;
+  }
+  return fallback;
+}
+
 type RequestOptions = {
   method?: 'GET' | 'POST' | 'PATCH' | 'DELETE';
   body?: unknown;
@@ -38,7 +72,11 @@ type RequestOptions = {
 
 type Envelope<T> = { success: boolean; data?: T; message?: string; extras?: unknown };
 
-async function rawRequest<T>(path: string, options: RequestOptions = {}, allowRetry = true): Promise<T> {
+async function rawRequest<T>(
+  path: string,
+  options: RequestOptions = {},
+  allowRetry = true,
+): Promise<T> {
   const { method = 'GET', body, auth = true, useRefreshToken = false } = options;
   const headers: Record<string, string> = { 'Content-Type': 'application/json' };
 
@@ -53,7 +91,7 @@ async function rawRequest<T>(path: string, options: RequestOptions = {}, allowRe
     body: body !== undefined ? JSON.stringify(body) : undefined,
   });
 
-  if (response.status === 204) return undefined as T;
+  if (response.status === 204) return undefined;
 
   const json = (await response.json().catch(() => null)) as Envelope<T> | null;
 
@@ -65,7 +103,7 @@ async function rawRequest<T>(path: string, options: RequestOptions = {}, allowRe
     throw new ApiError(response.status, json?.message ?? 'Request failed', json?.extras);
   }
 
-  return (json?.data as T) ?? (undefined as T);
+  return json?.data ?? undefined;
 }
 
 async function tryRefreshTokens(): Promise<boolean> {
@@ -88,5 +126,6 @@ export const api = {
   post: <T>(path: string, body?: unknown) => rawRequest<T>(path, { method: 'POST', body }),
   patch: <T>(path: string, body?: unknown) => rawRequest<T>(path, { method: 'PATCH', body }),
   delete: <T>(path: string) => rawRequest<T>(path, { method: 'DELETE' }),
-  publicPost: <T>(path: string, body?: unknown) => rawRequest<T>(path, { method: 'POST', body, auth: false }),
+  publicPost: <T>(path: string, body?: unknown) =>
+    rawRequest<T>(path, { method: 'POST', body, auth: false }),
 };

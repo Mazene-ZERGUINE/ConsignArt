@@ -71,8 +71,6 @@ export class ArtWorkEntity {
   @Column('date', { name: 'submit_date' })
   submitDate: Date;
 
-  // Relations optionnelles : TypeORM les laisse `undefined` tant qu'elles ne sont
-  // pas chargées. Cf. LoadedArtWork dans mappers/art-work.mapper.ts.
   @ManyToOne(() => ArtistEntity, (entity) => entity.artWorks)
   public owner?: ArtistEntity;
 

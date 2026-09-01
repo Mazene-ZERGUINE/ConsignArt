@@ -9,11 +9,10 @@ import {
   ParseUUIDPipe,
   Patch,
   Post,
-  UseGuards,
 } from '@nestjs/common';
 import { ApiBearerAuth, ApiOperation, ApiTags } from '@nestjs/swagger';
-import { JwtAccessGuard } from '../../core/guards/jwt-access.guard';
-import { GalleryRoleGuard } from '../../core/guards/gallery-role.guard';
+import { Roles } from '../../shared/decorators/roles.decorator';
+import { UserRoles } from '../../shared/enums/user-roles.enum';
 import { AuthUser } from '../../shared/decorators/authenticated-user.decorator';
 import { type AuthenticatedUser } from '../../core/types/authenticated-user.types';
 import { CreateExpositionDto } from './dto/create-exposition.dto';
@@ -35,7 +34,7 @@ export class ExpositionsController {
     private readonly closeExposition: CloseExpositionService,
   ) {}
 
-  @UseGuards(JwtAccessGuard, GalleryRoleGuard)
+  @Roles(UserRoles.GALLERY)
   @Post()
   @HttpCode(HttpStatus.CREATED)
   @ApiOperation({
@@ -49,7 +48,6 @@ export class ExpositionsController {
     return this.createExposition.execute(requester, dto);
   }
 
-  @UseGuards(JwtAccessGuard)
   @Get()
   @HttpCode(HttpStatus.OK)
   @ApiOperation({
@@ -60,7 +58,6 @@ export class ExpositionsController {
     return this.getExposition.list(requester);
   }
 
-  @UseGuards(JwtAccessGuard)
   @Get(':id')
   @HttpCode(HttpStatus.OK)
   @ApiOperation({ description: 'Endpoint used to read a single exposition by id' })
@@ -68,7 +65,6 @@ export class ExpositionsController {
     return this.getExposition.getOne(id);
   }
 
-  @UseGuards(JwtAccessGuard)
   @Patch(':id')
   @HttpCode(HttpStatus.OK)
   @ApiOperation({
@@ -82,7 +78,6 @@ export class ExpositionsController {
     return this.updateExposition.execute(requester, id, dto);
   }
 
-  @UseGuards(JwtAccessGuard)
   @Delete(':id')
   @HttpCode(HttpStatus.NO_CONTENT)
   @ApiOperation({

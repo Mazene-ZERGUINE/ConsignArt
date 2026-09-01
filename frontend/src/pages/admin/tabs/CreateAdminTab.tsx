@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import type { FormEvent } from 'react';
-import { api, ApiError } from '../../../lib/api';
+import { api, getErrorMessage } from '../../../lib/api';
 import { Alert } from '../../../components/ui';
 
 export function CreateAdminTab() {
@@ -19,7 +19,7 @@ export function CreateAdminTab() {
       setTempPassword(result.tempPassword);
       setEmail('');
     } catch (err) {
-      setError(err instanceof ApiError ? err.message : 'Failed to create admin account');
+      setError(getErrorMessage(err, 'Failed to create admin account'));
     } finally {
       setSubmitting(false);
     }

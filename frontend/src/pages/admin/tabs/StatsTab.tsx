@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { api, ApiError } from '../../../lib/api';
+import { api, getErrorMessage } from '../../../lib/api';
 import type { AdminStats } from '../../../types/api';
 import { Alert, Spinner, StatTile, formatMoney } from '../../../components/ui';
 
@@ -11,7 +11,7 @@ export function StatsTab() {
     api
       .get<AdminStats>('/analytics/admin')
       .then(setStats)
-      .catch((err: unknown) => setError(err instanceof ApiError ? err.message : 'Failed to load statistics'));
+      .catch((err: unknown) => setError(getErrorMessage(err, 'Failed to load statistics')));
   }, []);
 
   if (error) return <Alert type="error">{error}</Alert>;

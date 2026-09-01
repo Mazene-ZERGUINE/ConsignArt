@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { api, ApiError } from '../../../lib/api';
+import { api, getErrorMessage } from '../../../lib/api';
 import type { AuthenticatedUser, UserRole } from '../../../types/api';
 import { UserRoles } from '../../../types/api';
 import { Alert, EmptyState, Spinner } from '../../../components/ui';
@@ -15,7 +15,7 @@ export function UsersTab() {
     api
       .get<AuthenticatedUser[]>(`/users${query}`)
       .then(setUsers)
-      .catch((err: unknown) => setError(err instanceof ApiError ? err.message : 'Failed to load users'));
+      .catch((err: unknown) => setError(getErrorMessage(err, 'Failed to load users')));
   }, [role]);
 
   return (

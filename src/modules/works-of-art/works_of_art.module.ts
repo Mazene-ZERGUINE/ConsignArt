@@ -10,6 +10,10 @@ import { GetArtWorkService } from './services/get-art-work.service';
 import { UpdateArtWorkService } from './services/update-art-work.service';
 import { DeleteArtWorkService } from './services/delete-art-work.service';
 import { ChangeArtWorkStatusService } from './services/change-art-work-status.service';
+import { GetArtWorkHistoryService } from './services/get-art-work-history.service';
+import { ArtWorkNotSoldPipe } from './pipes/art-work-not-sold.pipe';
+import { ArtWorkOwnershipGuard } from '../../core/guards/art-work-ownership.guard';
+import { ResponseCacheInterceptor } from '../../core/interceptors/response-cache.interceptor';
 import { ArtworksController } from './artworks.controller';
 
 @Module({
@@ -24,6 +28,10 @@ import { ArtworksController } from './artworks.controller';
     UpdateArtWorkService,
     DeleteArtWorkService,
     ChangeArtWorkStatusService,
+    GetArtWorkHistoryService,
+    ArtWorkNotSoldPipe,
+    ArtWorkOwnershipGuard,
+    ResponseCacheInterceptor,
   ],
   exports: [CreateArtWorkService, GetArtworkByArtistService],
   controllers: [ArtworksController],

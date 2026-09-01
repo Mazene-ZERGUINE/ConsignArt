@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { api, ApiError } from '../../../lib/api';
+import { api, getErrorMessage } from '../../../lib/api';
 import type { TransferRequestResponse, TransferRequestStatusType } from '../../../types/api';
 import { TransferRequestStatus } from '../../../types/api';
 import { Alert, Badge, EmptyState, Spinner } from '../../../components/ui';
@@ -15,7 +15,7 @@ export function TransferRequestsTab() {
     api
       .get<TransferRequestResponse[]>(`/admin/transfer-requests?status=${status}`)
       .then(setRequests)
-      .catch((err: unknown) => setError(err instanceof ApiError ? err.message : 'Failed to load transfer requests'));
+      .catch((err: unknown) => setError(getErrorMessage(err, 'Failed to load transfer requests')));
   };
 
   useEffect(load, [status]);
@@ -26,7 +26,7 @@ export function TransferRequestsTab() {
       await api.patch(`/admin/transfer-requests/${id}/action?actionType=${actionType}`);
       load();
     } catch (err) {
-      setActionError(err instanceof ApiError ? err.message : 'Failed to update transfer request');
+      setActionError(getErrorMessage(err, 'Failed to update transfer request'));
     }
   }
 

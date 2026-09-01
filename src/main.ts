@@ -5,6 +5,7 @@ import { ConfigService } from '@nestjs/config';
 import { createEnvConfig } from './core/config/env.config';
 import { Logger } from '@nestjs/common';
 import { GlobalExceptionsHandlerFilter } from './core/filter/global-exception-handler.filter';
+import { BusinessRuleViolationFilter } from './core/filter/business-rule-violation.filter';
 import { createDtoValidationPipe } from './core/pipes/dto-validation-options.pipe';
 import cookieParser from 'cookie-parser';
 import { ApiResponseTransformationInterceptor } from './core/interceptors/api-response-transformation.interceptor';
@@ -19,7 +20,7 @@ async function bootstrap() {
   const configService = app.get(ConfigService);
   const env = createEnvConfig(configService);
 
-  app.useGlobalFilters(new GlobalExceptionsHandlerFilter());
+  app.useGlobalFilters(new GlobalExceptionsHandlerFilter(), new BusinessRuleViolationFilter());
   app.useGlobalPipes(createDtoValidationPipe());
 
   app.useGlobalInterceptors(

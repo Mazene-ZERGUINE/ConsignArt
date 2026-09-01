@@ -1,8 +1,9 @@
 import { useEffect, useState } from 'react';
-import { api, ApiError } from '../../../lib/api';
+import { api, getErrorMessage } from '../../../lib/api';
 import type { ArtWorkResponse, ArtWorkStatusType } from '../../../types/api';
 import { ArtWorkStatus } from '../../../types/api';
 import { Alert, Badge, EmptyState, Spinner, formatMoney } from '../../../components/ui';
+import { ArtWorkHistoryToggle } from '../../../components/ArtWorkHistory';
 
 export function ArtworksTab() {
   const [artWorks, setArtWorks] = useState<ArtWorkResponse[] | null>(null);
@@ -13,7 +14,7 @@ export function ArtworksTab() {
     api
       .get<ArtWorkResponse[]>('/artworks')
       .then(setArtWorks)
-      .catch((err: unknown) => setError(err instanceof ApiError ? err.message : 'Failed to load art works'));
+      .catch((err: unknown) => setError(getErrorMessage(err, 'Failed to load art works')));
   };
 
   useEffect(load, []);
@@ -24,7 +25,7 @@ export function ArtworksTab() {
       await api.patch(`/artworks/${id}/status`, { status });
       load();
     } catch (err) {
-      setActionError(err instanceof ApiError ? err.message : 'Failed to change status');
+      setActionError(getErrorMessage(err, 'Failed to change status'));
     }
   }
 
@@ -34,7 +35,7 @@ export function ArtworksTab() {
       await api.delete(`/artworks/${id}`);
       load();
     } catch (err) {
-      setActionError(err instanceof ApiError ? err.message : 'Failed to delete art work');
+      setActionError(getErrorMessage(err, 'Failed to delete art work'));
     }
   }
 
@@ -69,19 +70,34 @@ export function ArtworksTab() {
                   <Badge value={artWork.status} />
                 </td>
                 <td>
-                  <select
-                    value={artWork.status}
-                    onChange={(e) => void changeStatus(artWork.id, e.target.value as ArtWorkStatusType)}
+                  <div
+                    style={{
+                      display: 'flex',
+                      gap: '0.4rem',
+                      alignItems: 'center',
+                      flexWrap: 'wrap',
+                    }}
                   >
-                    {Object.values(ArtWorkStatus).map((value) => (
-                      <option key={value} value={value}>
-                        {value}
-                      </option>
-                    ))}
-                  </select>{' '}
-                  <button className="btn btn-danger btn-sm" onClick={() => void remove(artWork.id)}>
-                    Delete
-                  </button>
+                    <select
+                      value={artWork.status}
+                      onChange={(e) =>
+                        void changeStatus(artWork.id, e.target.value as ArtWorkStatusType)
+                      }
+                    >
+                      {Object.values(ArtWorkStatus).map((value) => (
+                        <option key={value} value={value}>
+                          {value}
+                        </option>
+                      ))}
+                    </select>
+                    <button
+                      className="btn btn-danger btn-sm"
+                      onClick={() => void remove(artWork.id)}
+                    >
+                      Delete
+                    </button>
+                    <ArtWorkHistoryToggle artWorkId={artWork.id} />
+                  </div>
                 </td>
               </tr>
             ))}

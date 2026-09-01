@@ -10,20 +10,19 @@ import {
   Patch,
   Post,
   Query,
-  UseGuards,
 } from '@nestjs/common';
 import { ApiOperation, ApiTags } from '@nestjs/swagger';
 import { AuthUser } from '../../shared/decorators/authenticated-user.decorator';
 import { type AuthenticatedUser } from '../../core/types/authenticated-user.types';
 import { CreateArtistDto } from './dto/create-artist.dto';
 import { AddArtistToGalleryService } from './services/add-artist-to-gallery.service';
-import { GalleryRoleGuard } from '../../core/guards/gallery-role.guard';
-import { JwtAccessGuard } from '../../core/guards/jwt-access.guard';
-import { AdminRoleGuard } from '../../core/guards/admin-role.guard';
+import { Roles } from '../../shared/decorators/roles.decorator';
+import { UserRoles } from '../../shared/enums/user-roles.enum';
 import { GetGalleryService } from './services/get-gallery.service';
 import { UpdateGalleryService } from './services/update-gallery.service';
 import { UpdateGalleryDto } from './dto/update-gallery.dto';
 import { GalleryUserResponseDto } from '../../shared/dto/base-user-response.dto';
+import { GalleryDirectoryEntryDto } from './dto/gallery-directory-entry.dto';
 
 @ApiTags('Gallery')
 @Controller('gallery')
@@ -34,7 +33,7 @@ export class GalleryController {
     private readonly updateGallery: UpdateGalleryService,
   ) {}
 
-  @UseGuards(JwtAccessGuard, GalleryRoleGuard)
+  @Roles(UserRoles.GALLERY)
   @Post('add-artist')
   @HttpCode(HttpStatus.OK)
   @ApiOperation({
@@ -48,7 +47,7 @@ export class GalleryController {
     await this.addArtistToGallery.execute(galleryUser.userId, createArtistDto);
   }
 
-  @UseGuards(JwtAccessGuard, AdminRoleGuard)
+  @Roles(UserRoles.ADMIN)
   @Get()
   @HttpCode(HttpStatus.OK)
   @ApiOperation({
@@ -61,7 +60,16 @@ export class GalleryController {
     return this.getGallery.list(pending);
   }
 
-  @UseGuards(JwtAccessGuard)
+  @Get('directory')
+  @HttpCode(HttpStatus.OK)
+  @ApiOperation({
+    description:
+      'Endpoint used to list validated galleries, so an artist can pick a transfer target or a gallery can pick a loan destination without knowing its id',
+  })
+  public async directory(): Promise<GalleryDirectoryEntryDto[]> {
+    return this.getGallery.listValidated();
+  }
+
   @Get(':id')
   @HttpCode(HttpStatus.OK)
   @ApiOperation({
@@ -75,7 +83,6 @@ export class GalleryController {
     return this.getGallery.getOne(requester, id);
   }
 
-  @UseGuards(JwtAccessGuard)
   @Patch(':id')
   @HttpCode(HttpStatus.OK)
   @ApiOperation({

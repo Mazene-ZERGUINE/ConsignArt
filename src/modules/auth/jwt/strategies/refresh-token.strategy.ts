@@ -9,12 +9,7 @@ import { JwtPayload } from '../../../../core/types/jwt-payload.types';
 export class RefreshTokenStrategy extends PassportStrategy(Strategy, 'jwt-refresh') {
   constructor(private config: ConfigService) {
     super({
-      jwtFromRequest: ExtractJwt.fromExtractors([
-        (req: Request) => {
-          const cookies = req.cookies as Record<string, string> | undefined;
-          return cookies?.refreshToken ?? null;
-        },
-      ]),
+      jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
       secretOrKey: config.getOrThrow<string>('JWT_REFRESH_SECRET'),
       passReqToCallback: true,
       ignoreExpiration: false,
@@ -22,9 +17,7 @@ export class RefreshTokenStrategy extends PassportStrategy(Strategy, 'jwt-refres
   }
 
   validate(req: Request, payload: JwtPayload) {
-    const cookies = req.cookies as Record<string, string> | undefined;
-    const refreshToken = cookies?.refreshToken;
-
+    const refreshToken = ExtractJwt.fromAuthHeaderAsBearerToken()(req);
     if (!refreshToken) throw new UnauthorizedException();
 
     return { ...payload, refreshToken };
