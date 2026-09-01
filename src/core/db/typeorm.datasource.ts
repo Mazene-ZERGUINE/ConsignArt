@@ -11,7 +11,7 @@ const options = createTypeOrmConfig(configService) as DataSourceOptions;
 const dataSource = new DataSource({
   ...options,
   synchronize: false,
-  migrations: ['src/core/db/migrations/*.ts'],
+  migrations: [__dirname + '/migrations/*.{ts,js}'],
 });
 
 export default dataSource;

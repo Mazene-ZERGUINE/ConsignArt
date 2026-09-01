@@ -71,7 +71,12 @@ export class CreateLoanService {
 
       await manager.update(ArtWorkEntity, artWork.id, { status: ArtWorkStatusEnum.ON_LOAN });
 
-      const loaded: LoadedLoan = { ...loan, workArt: artWork, fromGallery: artWork.gallery, toGallery };
+      const loaded: LoadedLoan = {
+        ...loan,
+        workArt: artWork,
+        fromGallery: artWork.gallery,
+        toGallery,
+      };
       return toLoanDto(loaded);
     });
   }

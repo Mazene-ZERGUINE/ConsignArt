@@ -12,8 +12,9 @@ import {
   Query,
   UseGuards,
 } from '@nestjs/common';
-import { ApiOperation, ApiTags } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiOperation, ApiTags } from '@nestjs/swagger';
 import { JwtAccessGuard } from '../../core/guards/jwt-access.guard';
+import { OwnershipGuard } from '../../core/guards/ownership.guard';
 import { AuthUser } from '../../shared/decorators/authenticated-user.decorator';
 import { type AuthenticatedUser } from '../../core/types/authenticated-user.types';
 import { ArtWorkResponseDto } from './dto/art-work-response.dto';
@@ -26,6 +27,7 @@ import { DeleteArtWorkService } from './services/delete-art-work.service';
 import { ChangeArtWorkStatusService } from './services/change-art-work-status.service';
 
 @ApiTags('artworks')
+@ApiBearerAuth()
 @Controller('artworks')
 export class ArtworksController {
   constructor(
@@ -63,7 +65,7 @@ export class ArtworksController {
     return this.getArtWork.getOne(id);
   }
 
-  @UseGuards(JwtAccessGuard)
+  @UseGuards(JwtAccessGuard, OwnershipGuard({ in: 'params', key: 'id' }, ['gallery', 'artist']))
   @Patch(':id')
   @HttpCode(HttpStatus.OK)
   @ApiOperation({
@@ -78,7 +80,7 @@ export class ArtworksController {
     return this.updateArtWork.execute(requester, id, dto);
   }
 
-  @UseGuards(JwtAccessGuard)
+  @UseGuards(JwtAccessGuard, OwnershipGuard({ in: 'params', key: 'id' }, ['gallery']))
   @Patch(':id/status')
   @HttpCode(HttpStatus.OK)
   @ApiOperation({
@@ -93,7 +95,7 @@ export class ArtworksController {
     return this.changeArtWorkStatus.execute(requester, id, dto);
   }
 
-  @UseGuards(JwtAccessGuard)
+  @UseGuards(JwtAccessGuard, OwnershipGuard({ in: 'params', key: 'id' }, ['gallery', 'artist']))
   @Delete(':id')
   @HttpCode(HttpStatus.NO_CONTENT)
   @ApiOperation({

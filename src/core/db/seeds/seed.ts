@@ -252,7 +252,9 @@ async function bootstrap(): Promise<void> {
   logger.log('  admin: admin@consignart.test');
   logger.log('  gallery (validated): gallery.a@consignart.test, gallery.b@consignart.test');
   logger.log('  gallery (pending validation): gallery.c@consignart.test');
-  logger.log('  artists: artist.elena@consignart.test, artist.marcus@consignart.test, artist.sofia@consignart.test');
+  logger.log(
+    '  artists: artist.elena@consignart.test, artist.marcus@consignart.test, artist.sofia@consignart.test',
+  );
   logger.log('  collectors: collector.1@consignart.test, collector.2@consignart.test');
 
   await app.close();
@@ -262,7 +264,9 @@ async function getArtWorksByTitle(
   dataSource: DataSource,
   titles: string[],
 ): Promise<Record<string, string>> {
-  const rows = await dataSource.getRepository(ArtWorkEntity).find({ where: titles.map((title) => ({ title })) });
+  const rows = await dataSource
+    .getRepository(ArtWorkEntity)
+    .find({ where: titles.map((title) => ({ title })) });
 
   return Object.fromEntries(rows.map((row) => [row.title, row.id]));
 }

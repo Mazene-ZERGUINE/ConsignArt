@@ -11,7 +11,10 @@ import {
   MaxLength,
 } from 'class-validator';
 import { ApiPropertyOptional } from '@nestjs/swagger';
-import { type ExpositionType, ExpositionTypeEnum } from '../../../shared/enums/exposition-type.enum';
+import {
+  type ExpositionType,
+  ExpositionTypeEnum,
+} from '../../../shared/enums/exposition-type.enum';
 
 export class CreateExpositionDto {
   @IsString()

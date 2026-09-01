@@ -1,4 +1,4 @@
-import { BadRequestException, ForbiddenException, NotFoundException } from '@nestjs/common';
+import { ForbiddenException, NotFoundException } from '@nestjs/common';
 import { CreateLoanService } from '../../../src/modules/expositions/loans/services/create-loan.service';
 import { ArtWorkEntity } from '../../../src/modules/works-of-art/entities/art-work.entity';
 import { GalleryEntity } from '../../../src/modules/gallery/entities/gallery.entity';
@@ -40,7 +40,9 @@ describe('CreateLoanService', () => {
         return Promise.resolve(null);
       }),
       create: jest.fn((_entity: unknown, obj: Record<string, unknown>) => obj),
-      save: jest.fn((obj: Record<string, unknown>) => Promise.resolve({ id: 'generated-id', ...obj })),
+      save: jest.fn((obj: Record<string, unknown>) =>
+        Promise.resolve({ id: 'generated-id', ...obj }),
+      ),
       update: jest.fn(() => Promise.resolve()),
     };
   }

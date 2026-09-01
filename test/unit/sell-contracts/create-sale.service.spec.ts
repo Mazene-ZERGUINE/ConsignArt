@@ -1,4 +1,4 @@
-import { BadRequestException, ForbiddenException, NotFoundException } from '@nestjs/common';
+import { ForbiddenException, NotFoundException } from '@nestjs/common';
 import { CreateSaleService } from '../../../src/modules/sell-contracts/services/create-sale.service';
 import { CalculateCommissionService } from '../../../src/modules/commission-rules/services/calculate-commission.service';
 import { ArtWorkEntity } from '../../../src/modules/works-of-art/entities/art-work.entity';
@@ -38,7 +38,9 @@ describe('CreateSaleService', () => {
         return Promise.resolve(null);
       }),
       create: jest.fn((_entity: unknown, obj: Record<string, unknown>) => obj),
-      save: jest.fn((obj: Record<string, unknown>) => Promise.resolve({ id: 'generated-id', ...obj })),
+      save: jest.fn((obj: Record<string, unknown>) =>
+        Promise.resolve({ id: 'generated-id', ...obj }),
+      ),
       update: jest.fn(() => Promise.resolve()),
     };
   }

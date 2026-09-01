@@ -13,7 +13,9 @@ import {
 } from '@nestjs/common';
 import { ApiBearerAuth, ApiOperation, ApiTags } from '@nestjs/swagger';
 import { JwtAccessGuard } from '../../core/guards/jwt-access.guard';
-import { GalleryRoleGuard } from '../../core/guards/gallery-role.guard';
+import { RolesGuard } from '../../core/guards/roles.guard';
+import { Roles } from '../../shared/decorators/roles.decorator';
+import { UserRoles } from '../../shared/enums/user-roles.enum';
 import { AuthUser } from '../../shared/decorators/authenticated-user.decorator';
 import { type AuthenticatedUser } from '../../core/types/authenticated-user.types';
 import { CreateExpositionDto } from './dto/create-exposition.dto';
@@ -35,7 +37,8 @@ export class ExpositionsController {
     private readonly closeExposition: CloseExpositionService,
   ) {}
 
-  @UseGuards(JwtAccessGuard, GalleryRoleGuard)
+  @UseGuards(JwtAccessGuard, RolesGuard)
+  @Roles(UserRoles.GALLERY)
   @Post()
   @HttpCode(HttpStatus.CREATED)
   @ApiOperation({

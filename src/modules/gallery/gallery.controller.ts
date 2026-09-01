@@ -12,20 +12,22 @@ import {
   Query,
   UseGuards,
 } from '@nestjs/common';
-import { ApiOperation, ApiTags } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiOperation, ApiTags } from '@nestjs/swagger';
 import { AuthUser } from '../../shared/decorators/authenticated-user.decorator';
 import { type AuthenticatedUser } from '../../core/types/authenticated-user.types';
 import { CreateArtistDto } from './dto/create-artist.dto';
 import { AddArtistToGalleryService } from './services/add-artist-to-gallery.service';
-import { GalleryRoleGuard } from '../../core/guards/gallery-role.guard';
 import { JwtAccessGuard } from '../../core/guards/jwt-access.guard';
-import { AdminRoleGuard } from '../../core/guards/admin-role.guard';
+import { RolesGuard } from '../../core/guards/roles.guard';
+import { Roles } from '../../shared/decorators/roles.decorator';
+import { UserRoles } from '../../shared/enums/user-roles.enum';
 import { GetGalleryService } from './services/get-gallery.service';
 import { UpdateGalleryService } from './services/update-gallery.service';
 import { UpdateGalleryDto } from './dto/update-gallery.dto';
 import { GalleryUserResponseDto } from '../../shared/dto/base-user-response.dto';
 
 @ApiTags('Gallery')
+@ApiBearerAuth()
 @Controller('gallery')
 export class GalleryController {
   constructor(
@@ -34,7 +36,8 @@ export class GalleryController {
     private readonly updateGallery: UpdateGalleryService,
   ) {}
 
-  @UseGuards(JwtAccessGuard, GalleryRoleGuard)
+  @UseGuards(JwtAccessGuard, RolesGuard)
+  @Roles(UserRoles.GALLERY)
   @Post('add-artist')
   @HttpCode(HttpStatus.OK)
   @ApiOperation({
@@ -48,7 +51,8 @@ export class GalleryController {
     await this.addArtistToGallery.execute(galleryUser.userId, createArtistDto);
   }
 
-  @UseGuards(JwtAccessGuard, AdminRoleGuard)
+  @UseGuards(JwtAccessGuard, RolesGuard)
+  @Roles(UserRoles.ADMIN)
   @Get()
   @HttpCode(HttpStatus.OK)
   @ApiOperation({
