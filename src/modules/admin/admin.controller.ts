@@ -16,7 +16,9 @@ import { ValidateGalleryAccountService } from './services/validate-gallery-accou
 import { AuthUser } from '../../shared/decorators/authenticated-user.decorator';
 import { type AuthenticatedUser } from '../../core/types/authenticated-user.types';
 import { JwtAccessGuard } from '../../core/guards/jwt-access.guard';
-import { AdminRoleGuard } from '../../core/guards/admin-role.guard';
+import { RolesGuard } from '../../core/guards/roles.guard';
+import { Roles } from '../../shared/decorators/roles.decorator';
+import { UserRoles } from '../../shared/enums/user-roles.enum';
 import {
   TransferRequestActionType,
   type TransferRequestStatus,
@@ -40,7 +42,8 @@ export class AdminController {
     private readonly createAdminAccount: CreateAdminAccountService,
   ) {}
 
-  @UseGuards(JwtAccessGuard, AdminRoleGuard)
+  @UseGuards(JwtAccessGuard, RolesGuard)
+  @Roles(UserRoles.ADMIN)
   @Post('accounts')
   @HttpCode(HttpStatus.CREATED)
   @ApiOperation({
@@ -54,7 +57,8 @@ export class AdminController {
     return await this.createAdminAccount.execute(dto);
   }
 
-  @UseGuards(JwtAccessGuard, AdminRoleGuard)
+  @UseGuards(JwtAccessGuard, RolesGuard)
+  @Roles(UserRoles.ADMIN)
   @Get('validate-gallery-account')
   @HttpCode(HttpStatus.OK)
   @ApiOperation({
@@ -67,7 +71,8 @@ export class AdminController {
     await this.validateGalleryAccount.execute(galleryId, user.userId);
   }
 
-  @UseGuards(JwtAccessGuard, AdminRoleGuard)
+  @UseGuards(JwtAccessGuard, RolesGuard)
+  @Roles(UserRoles.ADMIN)
   @Get('transfer-requests')
   @HttpCode(HttpStatus.OK)
   @ApiOperation({
@@ -80,7 +85,8 @@ export class AdminController {
     return await this.getTransferRequests.execute(transferStatus);
   }
 
-  @UseGuards(JwtAccessGuard, AdminRoleGuard)
+  @UseGuards(JwtAccessGuard, RolesGuard)
+  @Roles(UserRoles.ADMIN)
   @Patch('transfer-requests/:id/action')
   @HttpCode(HttpStatus.NO_CONTENT)
   @ApiOperation({

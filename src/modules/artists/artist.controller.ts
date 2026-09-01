@@ -12,7 +12,9 @@ import {
 } from '@nestjs/common';
 import { ApiBearerAuth, ApiOperation, ApiProperty, ApiTags } from '@nestjs/swagger';
 import { JwtAccessGuard } from '../../core/guards/jwt-access.guard';
-import { ArtistRoleGuard } from '../../core/guards/artist-role.guard';
+import { RolesGuard } from '../../core/guards/roles.guard';
+import { Roles } from '../../shared/decorators/roles.decorator';
+import { UserRoles } from '../../shared/enums/user-roles.enum';
 import { AuthUser } from '../../shared/decorators/authenticated-user.decorator';
 import { type AuthenticatedUser } from '../../core/types/authenticated-user.types';
 import { CreateTransferRequestDto } from '../../shared/dto/create-transfer-request.dto';
@@ -21,6 +23,7 @@ import { CreateArtWorkDto } from '../works-of-art/dto/create-art-work.dto';
 import { GetArtworkByArtistService } from '../works-of-art/services/get-art-work-by-artist.service';
 import { ArtWorkResponseDto } from '../works-of-art/dto/art-work-response.dto';
 import { AddArtworkService } from './services/add-art-work.service';
+import { MaxActiveArtworksPipe } from '../../core/pipes/max-active-artworks.pipe';
 import { GetArtistService } from './services/get-artist.service';
 import { UpdateArtistService } from './services/update-artist.service';
 import { ChangeArtistStatusService } from './services/change-artist-status.service';
@@ -41,7 +44,8 @@ export class ArtistController {
     private readonly changeArtistStatus: ChangeArtistStatusService,
   ) {}
 
-  @UseGuards(JwtAccessGuard, ArtistRoleGuard)
+  @UseGuards(JwtAccessGuard, RolesGuard)
+  @Roles(UserRoles.ARTISTE)
   @Post('request-transfer')
   @HttpCode(HttpStatus.CREATED)
   @ApiOperation({
@@ -54,7 +58,8 @@ export class ArtistController {
     await this.initiateTransferRequest.execute(artistUser.userId, transferRequestDto);
   }
 
-  @UseGuards(JwtAccessGuard, ArtistRoleGuard)
+  @UseGuards(JwtAccessGuard, RolesGuard)
+  @Roles(UserRoles.ARTISTE)
   @Post('art-work/')
   @HttpCode(HttpStatus.CREATED)
   @ApiOperation({
@@ -62,12 +67,13 @@ export class ArtistController {
   })
   async addNewArtWork(
     @AuthUser() user: AuthenticatedUser,
-    @Body() createArtWorkDto: CreateArtWorkDto,
+    @Body(MaxActiveArtworksPipe) createArtWorkDto: CreateArtWorkDto,
   ): Promise<void> {
     await this.addArtWork.execute(user.userId, createArtWorkDto);
   }
 
-  @UseGuards(JwtAccessGuard, ArtistRoleGuard)
+  @UseGuards(JwtAccessGuard, RolesGuard)
+  @Roles(UserRoles.ARTISTE)
   @Get('art-works')
   @HttpCode(HttpStatus.OK)
   @ApiProperty({
